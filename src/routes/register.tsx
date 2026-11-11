@@ -55,7 +55,7 @@ function RegisterPage() {
         email: d.email,
         password: d.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
+          emailRedirectTo: window.location.origin,
           data: { full_name: d.full_name, contact_number: d.contact_number, address: d.address, privacy_consent: true },
         },
       });
