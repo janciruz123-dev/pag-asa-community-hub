@@ -10,17 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedShellRouteRouteImport } from './routes/_authenticated/_shell/route'
 import { Route as AnnouncementsIndexRouteImport } from './routes/announcements/index'
 import { Route as AnnouncementsIdRouteImport } from './routes/announcements/$id'
+import { Route as AuthenticatedShellDashboardRouteImport } from './routes/_authenticated/_shell/dashboard'
+import { Route as AuthenticatedShellComplaintsIndexRouteImport } from './routes/_authenticated/_shell/complaints/index'
+import { Route as AuthenticatedShellComplaintsIdRouteImport } from './routes/_authenticated/_shell/complaints/$id'
+import { Route as AuthenticatedShellComplaintsNewRouteImport } from './routes/_authenticated/_shell/complaints/new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -48,6 +58,10 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedShellRouteRoute = AuthenticatedShellRouteRouteImport.update({
+  id: '/_shell',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AnnouncementsIndexRoute = AnnouncementsIndexRouteImport.update({
   id: '/announcements/',
   path: '/announcements/',
@@ -58,6 +72,30 @@ const AnnouncementsIdRoute = AnnouncementsIdRouteImport.update({
   path: '/announcements/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedShellDashboardRoute =
+  AuthenticatedShellDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => AuthenticatedShellRouteRoute,
+  } as any)
+const AuthenticatedShellComplaintsIndexRoute =
+  AuthenticatedShellComplaintsIndexRouteImport.update({
+    id: '/complaints/',
+    path: '/complaints/',
+    getParentRoute: () => AuthenticatedShellRouteRoute,
+  } as any)
+const AuthenticatedShellComplaintsIdRoute =
+  AuthenticatedShellComplaintsIdRouteImport.update({
+    id: '/complaints/$id',
+    path: '/complaints/$id',
+    getParentRoute: () => AuthenticatedShellRouteRoute,
+  } as any)
+const AuthenticatedShellComplaintsNewRoute =
+  AuthenticatedShellComplaintsNewRouteImport.update({
+    id: '/complaints/new',
+    path: '/complaints/new',
+    getParentRoute: () => AuthenticatedShellRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +106,10 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/announcements/$id': typeof AnnouncementsIdRoute
   '/announcements/': typeof AnnouncementsIndexRoute
+  '/dashboard': typeof AuthenticatedShellDashboardRoute
+  '/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
+  '/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
+  '/complaints/': typeof AuthenticatedShellComplaintsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,17 +120,27 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/announcements/$id': typeof AnnouncementsIdRoute
   '/announcements': typeof AnnouncementsIndexRoute
+  '/dashboard': typeof AuthenticatedShellDashboardRoute
+  '/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
+  '/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
+  '/complaints': typeof AuthenticatedShellComplaintsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/_shell': typeof AuthenticatedShellRouteRouteWithChildren
   '/announcements/$id': typeof AnnouncementsIdRoute
   '/announcements/': typeof AnnouncementsIndexRoute
+  '/_authenticated/_shell/dashboard': typeof AuthenticatedShellDashboardRoute
+  '/_authenticated/_shell/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
+  '/_authenticated/_shell/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
+  '/_authenticated/_shell/complaints/': typeof AuthenticatedShellComplaintsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +153,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/announcements/$id'
     | '/announcements/'
+    | '/dashboard'
+    | '/complaints/$id'
+    | '/complaints/new'
+    | '/complaints/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,20 +167,31 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/announcements/$id'
     | '/announcements'
+    | '/dashboard'
+    | '/complaints/$id'
+    | '/complaints/new'
+    | '/complaints'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/auth'
     | '/forgot-password'
     | '/privacy'
     | '/register'
     | '/reset-password'
+    | '/_authenticated/_shell'
     | '/announcements/$id'
     | '/announcements/'
+    | '/_authenticated/_shell/dashboard'
+    | '/_authenticated/_shell/complaints/$id'
+    | '/_authenticated/_shell/complaints/new'
+    | '/_authenticated/_shell/complaints/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -141,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -178,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/_shell': {
+      id: '/_authenticated/_shell'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedShellRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/announcements/': {
       id: '/announcements/'
       path: '/announcements'
@@ -192,11 +273,72 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnnouncementsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/_shell/dashboard': {
+      id: '/_authenticated/_shell/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedShellDashboardRouteImport
+      parentRoute: typeof AuthenticatedShellRouteRoute
+    }
+    '/_authenticated/_shell/complaints/': {
+      id: '/_authenticated/_shell/complaints/'
+      path: '/complaints'
+      fullPath: '/complaints/'
+      preLoaderRoute: typeof AuthenticatedShellComplaintsIndexRouteImport
+      parentRoute: typeof AuthenticatedShellRouteRoute
+    }
+    '/_authenticated/_shell/complaints/$id': {
+      id: '/_authenticated/_shell/complaints/$id'
+      path: '/complaints/$id'
+      fullPath: '/complaints/$id'
+      preLoaderRoute: typeof AuthenticatedShellComplaintsIdRouteImport
+      parentRoute: typeof AuthenticatedShellRouteRoute
+    }
+    '/_authenticated/_shell/complaints/new': {
+      id: '/_authenticated/_shell/complaints/new'
+      path: '/complaints/new'
+      fullPath: '/complaints/new'
+      preLoaderRoute: typeof AuthenticatedShellComplaintsNewRouteImport
+      parentRoute: typeof AuthenticatedShellRouteRoute
+    }
   }
 }
 
+interface AuthenticatedShellRouteRouteChildren {
+  AuthenticatedShellDashboardRoute: typeof AuthenticatedShellDashboardRoute
+  AuthenticatedShellComplaintsIdRoute: typeof AuthenticatedShellComplaintsIdRoute
+  AuthenticatedShellComplaintsNewRoute: typeof AuthenticatedShellComplaintsNewRoute
+  AuthenticatedShellComplaintsIndexRoute: typeof AuthenticatedShellComplaintsIndexRoute
+}
+
+const AuthenticatedShellRouteRouteChildren: AuthenticatedShellRouteRouteChildren =
+  {
+    AuthenticatedShellDashboardRoute: AuthenticatedShellDashboardRoute,
+    AuthenticatedShellComplaintsIdRoute: AuthenticatedShellComplaintsIdRoute,
+    AuthenticatedShellComplaintsNewRoute: AuthenticatedShellComplaintsNewRoute,
+    AuthenticatedShellComplaintsIndexRoute:
+      AuthenticatedShellComplaintsIndexRoute,
+  }
+
+const AuthenticatedShellRouteRouteWithChildren =
+  AuthenticatedShellRouteRoute._addFileChildren(
+    AuthenticatedShellRouteRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedShellRouteRoute: typeof AuthenticatedShellRouteRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedShellRouteRoute: AuthenticatedShellRouteRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   PrivacyRoute: PrivacyRoute,
