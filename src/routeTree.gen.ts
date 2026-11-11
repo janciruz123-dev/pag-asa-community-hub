@@ -10,33 +10,63 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as AnnouncementsIndexRouteImport } from './routes/announcements/index'
+import { Route as AnnouncementsIdRouteImport } from './routes/announcements/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnouncementsIndexRoute = AnnouncementsIndexRouteImport.update({
+  id: '/announcements/',
+  path: '/announcements/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnouncementsIdRoute = AnnouncementsIdRouteImport.update({
+  id: '/announcements/$id',
+  path: '/announcements/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/privacy': typeof PrivacyRoute
+  '/announcements/$id': typeof AnnouncementsIdRoute
+  '/announcements/': typeof AnnouncementsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/privacy': typeof PrivacyRoute
+  '/announcements/$id': typeof AnnouncementsIdRoute
+  '/announcements': typeof AnnouncementsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/privacy': typeof PrivacyRoute
+  '/announcements/$id': typeof AnnouncementsIdRoute
+  '/announcements/': typeof AnnouncementsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/privacy' | '/announcements/$id' | '/announcements/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/privacy' | '/announcements/$id' | '/announcements'
+  id: '__root__' | '/' | '/privacy' | '/announcements/$id' | '/announcements/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PrivacyRoute: typeof PrivacyRoute
+  AnnouncementsIdRoute: typeof AnnouncementsIdRoute
+  AnnouncementsIndexRoute: typeof AnnouncementsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +78,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/announcements/': {
+      id: '/announcements/'
+      path: '/announcements'
+      fullPath: '/announcements/'
+      preLoaderRoute: typeof AnnouncementsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/announcements/$id': {
+      id: '/announcements/$id'
+      path: '/announcements/$id'
+      fullPath: '/announcements/$id'
+      preLoaderRoute: typeof AnnouncementsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PrivacyRoute: PrivacyRoute,
+  AnnouncementsIdRoute: AnnouncementsIdRoute,
+  AnnouncementsIndexRoute: AnnouncementsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
