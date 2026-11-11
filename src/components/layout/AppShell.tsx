@@ -18,8 +18,9 @@ import { signOutEverywhere } from "@/lib/auth-actions";
 import { initials } from "@/lib/format";
 import { signedUrl } from "@/lib/storage";
 import { cn } from "@/lib/utils";
+import type { FileRouteTypes } from "@/routeTree.gen";
 
-type NavItem = { to: string; label: string; icon: LucideIcon; exact?: boolean };
+type NavItem = { to: FileRouteTypes["to"]; label: string; icon: LucideIcon; exact?: boolean };
 
 function residentNav(): NavItem[] {
   return [

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { Bell, CheckCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -41,7 +41,7 @@ export function useMarkRead(userId: string) {
 export function NotificationBell({ userId }: { userId: string }) {
   const { data } = useNotifications(userId);
   const mark = useMarkRead(userId);
-  const navigate = useNavigate();
+  const router = useRouter();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
 
@@ -84,7 +84,7 @@ export function NotificationBell({ userId }: { userId: string }) {
                 onClick={() => {
                   if (!n.is_read) mark.mutate([n.id]);
                   setOpen(false);
-                  if (n.link) navigate({ to: n.link });
+                  if (n.link && n.link.startsWith("/")) router.history.push(n.link);
                 }}
                 className={cn("flex w-full gap-3 border-b px-4 py-3 text-left transition-colors last:border-0 hover:bg-muted", !n.is_read && "bg-accent/50")}
               >

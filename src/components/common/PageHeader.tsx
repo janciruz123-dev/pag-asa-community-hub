@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import type { ReactNode } from "react";
+import type { FileRouteTypes } from "@/routeTree.gen";
 
-export type Crumb = { label: string; to?: string };
+export type Crumb = { label: string; to?: FileRouteTypes["to"] };
 
 export function PageHeader({ title, description, crumbs, actions }: { title: string; description?: string; crumbs?: Crumb[]; actions?: ReactNode }) {
   return (
