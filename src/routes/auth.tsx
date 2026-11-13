@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Eye, EyeOff, LogIn } from "lucide-react";
+import { Eye, EyeOff, Home, LogIn, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -9,16 +9,23 @@ import { Spinner } from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { currentUserQuery, fetchCurrentUser } from "@/hooks/use-current-user";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { currentUserQuery, fetchCurrentUser, useCurrentUser } from "@/hooks/use-current-user";
 import { supabase } from "@/integrations/supabase/client";
-import { safeRedirect } from "@/lib/auth-actions";
+import { initialLoginMode as initialMode, safeRedirect, type LoginMode as Mode } from "@/lib/auth-actions";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>): { redirect?: string } => (typeof s["redirect"] === "string" ? { redirect: s["redirect"] } : {}),
+  validateSearch: (s: Record<string, unknown>): { redirect?: string; mode?: Mode } => {
+    const out: { redirect?: string; mode?: Mode } = {};
+    if (typeof s["redirect"] === "string") out.redirect = s["redirect"];
+    if (s["mode"] === "admin" || s["mode"] === "resident") out.mode = s["mode"];
+    return out;
+  },
   head: () => ({
     meta: [
       { title: "Login — MyPag-asa" },
-      { name: "description", content: "Sign in to MyPag-asa to manage your barangay complaints and service requests." },
+      { name: "description", content: "Resident and administrator sign-in for MyPag-asa, the Barangay Pag-asa online services portal." },
       { property: "og:title", content: "Login to MyPag-asa" },
       { property: "og:description", content: "Sign in to the Barangay Pag-asa online services portal." },
       { property: "og:type", content: "website" },
@@ -31,20 +38,23 @@ export const Route = createFileRoute("/auth")({
 const schema = z.object({ email: z.string().trim().email("Enter a valid email address"), password: z.string().min(1, "Enter your password") });
 
 function LoginPage() {
-  const { redirect } = Route.useSearch();
+  const { redirect, mode: modeParam } = Route.useSearch();
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const { data: signedIn } = useCurrentUser();
+  const [mode, setMode] = useState<Mode>(initialMode(modeParam, redirect));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
+  const isAdmin = mode === "admin";
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const parsed = schema.safeParse({ email, password });
     if (!parsed.success) {
-      setErrors(Object.fromEntries(parsed.error.issues.map((i) => [i.path[0], i.message])));
+      setErrors(Object.fromEntries(parsed.error.issues.map((i) => [String(i.path[0]), i.message])));
       return;
     }
     setErrors({});
@@ -58,15 +68,23 @@ function LoginPage() {
         if (m.includes("invalid")) throw new Error("Incorrect email or password.");
         throw error;
       }
+      // Roles are always read back from the database, never from the form.
       const me = await fetchCurrentUser();
       if (me?.profile && !me.profile.is_active) {
         await supabase.auth.signOut();
         throw new Error("This account has been deactivated. Please contact the barangay office.");
       }
+      if (isAdmin && !me?.isOfficial) {
+        await supabase.auth.signOut();
+        qc.clear();
+        throw new Error("This account doesn't have administrator access. Residents should use Resident Login.");
+      }
       qc.setQueryData(currentUserQuery.queryKey, me);
       toast.success(`Welcome back, ${me?.profile?.full_name?.split(" ")[0] ?? "resident"}!`);
       const fallback = me?.isOfficial ? "/admin" : "/dashboard";
-      navigate({ href: safeRedirect(redirect, fallback), replace: true });
+      let target = safeRedirect(redirect, fallback);
+      if (target.startsWith("/admin") && !me?.isOfficial) target = "/dashboard";
+      navigate({ href: target, replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Unable to sign in.");
     } finally {
@@ -75,10 +93,31 @@ function LoginPage() {
   }
 
   return (
-    <AuthShell title="Sign in to MyPag-asa" subtitle="Use the email and password you registered with." footer={<>New resident? <Link to="/register" className="font-semibold text-royal hover:underline">Create an account</Link></>}>
-      <form onSubmit={onSubmit} className="space-y-4" noValidate>
+    <AuthShell
+      title={isAdmin ? "Administrator Login" : "Resident Login"}
+      subtitle={isAdmin ? "For authorized Barangay Pag-asa officials and staff only." : "Use the email and password you registered with."}
+      footer={isAdmin ? <>Administrator accounts are created by an existing administrator.</> : <>New resident? <Link to="/register" className="font-semibold text-royal hover:underline">Create an account</Link></>}
+    >
+      {signedIn && (
+        <div className="mb-5 rounded-lg border bg-accent p-3 text-sm">
+          You're signed in as <span className="font-semibold">{signedIn.email}</span>.{" "}
+          <Link to={signedIn.isOfficial ? "/admin" : "/dashboard"} className="font-semibold text-royal hover:underline">Go to your dashboard</Link>
+        </div>
+      )}
+      <Tabs value={mode} onValueChange={(v) => { setMode(v as Mode); setErrors({}); }} className="mb-6">
+        <TabsList className="grid h-auto w-full grid-cols-2 p-1">
+          <TabsTrigger value="resident" className="gap-2 py-2"><Home className="h-4 w-4" /> Resident Login</TabsTrigger>
+          <TabsTrigger value="admin" className="gap-2 py-2"><ShieldCheck className="h-4 w-4" /> Administrator Login</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      <form onSubmit={onSubmit} className={cn("space-y-4 rounded-xl", isAdmin && "border border-primary/20 bg-card p-5 shadow-card")} noValidate>
+        {isAdmin && (
+          <div className="flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground">
+            <ShieldCheck className="h-4 w-4" /> Restricted area · access is checked against your assigned role
+          </div>
+        )}
         <div>
-          <Label htmlFor="email">Email address</Label>
+          <Label htmlFor="email">{isAdmin ? "Administrator email" : "Email address"}</Label>
           <Input id="email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1.5 h-11" />
           <FieldError msg={errors["email"]} />
         </div>
@@ -95,7 +134,9 @@ function LoginPage() {
           </div>
           <FieldError msg={errors["password"]} />
         </div>
-        <Button type="submit" size="lg" className="w-full" disabled={busy}>{busy ? <Spinner /> : <LogIn />} Sign in</Button>
+        <Button type="submit" size="lg" variant={isAdmin ? "default" : "royal"} className="w-full" disabled={busy}>
+          {busy ? <Spinner /> : isAdmin ? <ShieldCheck /> : <LogIn />} {isAdmin ? "Sign in as administrator" : "Sign in"}
+        </Button>
       </form>
     </AuthShell>
   );

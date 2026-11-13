@@ -45,7 +45,7 @@ function Landing() {
             <p className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-3 py-1 text-xs font-medium tracking-wide">
               <MapPin className="h-3.5 w-3.5" /> Barangay Pag-asa · Olongapo City
             </p>
-            <h1 className="mt-5 text-4xl font-semibold leading-[1.1] sm:text-5xl lg:text-[3.4rem]">Welcome to MyPag-asa</h1>
+            <h1 className="mt-5 text-4xl font-semibold leading-[1.1] sm:text-5xl lg:text-[3.4rem]">Welcome to <span className="whitespace-nowrap">MyPag-asa</span></h1>
             <p className="mt-4 font-display text-xl text-sky sm:text-2xl">Your Barangay, Connected. Your Community, Empowered.</p>
             <p className="mt-5 max-w-xl text-base text-primary-foreground/80">
               Access barangay services, submit concerns, request assistance, and stay updated with the latest community announcements through one convenient online platform.

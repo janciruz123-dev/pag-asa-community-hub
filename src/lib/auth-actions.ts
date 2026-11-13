@@ -26,3 +26,11 @@ export function safeRedirect(target: unknown, fallback = "/dashboard"): string {
     return fallback;
   }
 }
+
+export type LoginMode = "resident" | "admin";
+
+/** Which login tab to show: an explicit mode wins, otherwise visitors bounced from /admin get the Administrator Login. */
+export function initialLoginMode(mode: LoginMode | undefined, redirect: string | undefined): LoginMode {
+  if (mode) return mode;
+  return redirect && safeRedirect(redirect, "").startsWith("/admin") ? "admin" : "resident";
+}

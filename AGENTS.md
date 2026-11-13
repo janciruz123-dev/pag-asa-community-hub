@@ -28,3 +28,12 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules (MyPag-asa)
+
+- Roles live in `user_roles`, staff permissions in `staff_permissions`; check access with the `has_role` / `has_permission` SQL helpers in RLS — never from profile fields or client state.
+- Status history, notifications, reference numbers and activity logs are written by database triggers, so every client path that updates a complaint/request gets them for free; don't duplicate them in app code.
+- Privileged account actions (creating staff/admin accounts, banning) go through `src/lib/admin.functions.ts`, which re-checks `is_admin` server-side before using the service-role client.
+- Signed-in pages live under `src/routes/_authenticated/_shell/` (shared sidebar layout); admin pages under `.../_shell/admin/` with per-page `requirePermission` guards.
+- Storage buckets are private (public buckets are blocked); files are shown through signed URLs and paths are stored in the database, not URLs.
+- The first account ever registered is bootstrapped as administrator by the signup trigger when no admin exists.

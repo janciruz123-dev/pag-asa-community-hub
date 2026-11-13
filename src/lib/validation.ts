@@ -93,3 +93,13 @@ export function todayISO(): string {
   const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
   return local.toISOString().slice(0, 10);
 }
+
+export const staffAccountSchema = z
+  .object({
+    full_name: z.string().trim().min(2, "Enter the full name").max(120),
+    email: z.string().trim().email("Enter a valid email address").max(255),
+    password: passwordSchema,
+    confirm_password: z.string(),
+    contact_number: z.union([z.literal(""), phoneSchema]),
+  })
+  .refine((d) => d.password === d.confirm_password, { message: "Passwords do not match", path: ["confirm_password"] });
