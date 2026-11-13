@@ -92,7 +92,7 @@ export function AppShell({ me, children }: { me: CurrentUser; children: ReactNod
 
   async function logout() {
     await signOutEverywhere(qc);
-    navigate({ to: "/auth", replace: true, search: { redirect: undefined } });
+    navigate({ to: "/auth", replace: true });
   }
 
   const sidebar = (

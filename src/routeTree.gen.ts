@@ -19,7 +19,12 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedShellRouteRouteImport } from './routes/_authenticated/_shell/route'
 import { Route as AnnouncementsIndexRouteImport } from './routes/announcements/index'
 import { Route as AnnouncementsIdRouteImport } from './routes/announcements/$id'
+import { Route as AuthenticatedShellAdminRouteRouteImport } from './routes/_authenticated/_shell/admin/route'
 import { Route as AuthenticatedShellDashboardRouteImport } from './routes/_authenticated/_shell/dashboard'
+import { Route as AuthenticatedShellHelpRouteImport } from './routes/_authenticated/_shell/help'
+import { Route as AuthenticatedShellNotificationsRouteImport } from './routes/_authenticated/_shell/notifications'
+import { Route as AuthenticatedShellProfileRouteImport } from './routes/_authenticated/_shell/profile'
+import { Route as AuthenticatedShellAdminIndexRouteImport } from './routes/_authenticated/_shell/admin/index'
 import { Route as AuthenticatedShellBulletinIndexRouteImport } from './routes/_authenticated/_shell/bulletin/index'
 import { Route as AuthenticatedShellBulletinIdRouteImport } from './routes/_authenticated/_shell/bulletin/$id'
 import { Route as AuthenticatedShellComplaintsIndexRouteImport } from './routes/_authenticated/_shell/complaints/index'
@@ -28,6 +33,8 @@ import { Route as AuthenticatedShellComplaintsNewRouteImport } from './routes/_a
 import { Route as AuthenticatedShellRequestsIndexRouteImport } from './routes/_authenticated/_shell/requests/index'
 import { Route as AuthenticatedShellRequestsIdRouteImport } from './routes/_authenticated/_shell/requests/$id'
 import { Route as AuthenticatedShellRequestsNewRouteImport } from './routes/_authenticated/_shell/requests/new'
+import { Route as AuthenticatedShellAdminResidentsIndexRouteImport } from './routes/_authenticated/_shell/admin/residents/index'
+import { Route as AuthenticatedShellAdminResidentsIdRouteImport } from './routes/_authenticated/_shell/admin/residents/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -77,11 +84,40 @@ const AnnouncementsIdRoute = AnnouncementsIdRouteImport.update({
   path: '/announcements/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedShellAdminRouteRoute =
+  AuthenticatedShellAdminRouteRouteImport.update({
+    id: '/admin',
+    path: '/admin',
+    getParentRoute: () => AuthenticatedShellRouteRoute,
+  } as any)
 const AuthenticatedShellDashboardRoute =
   AuthenticatedShellDashboardRouteImport.update({
     id: '/dashboard',
     path: '/dashboard',
     getParentRoute: () => AuthenticatedShellRouteRoute,
+  } as any)
+const AuthenticatedShellHelpRoute = AuthenticatedShellHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => AuthenticatedShellRouteRoute,
+} as any)
+const AuthenticatedShellNotificationsRoute =
+  AuthenticatedShellNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedShellRouteRoute,
+  } as any)
+const AuthenticatedShellProfileRoute =
+  AuthenticatedShellProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedShellRouteRoute,
+  } as any)
+const AuthenticatedShellAdminIndexRoute =
+  AuthenticatedShellAdminIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedShellAdminRouteRoute,
   } as any)
 const AuthenticatedShellBulletinIndexRoute =
   AuthenticatedShellBulletinIndexRouteImport.update({
@@ -131,6 +167,18 @@ const AuthenticatedShellRequestsNewRoute =
     path: '/requests/new',
     getParentRoute: () => AuthenticatedShellRouteRoute,
   } as any)
+const AuthenticatedShellAdminResidentsIndexRoute =
+  AuthenticatedShellAdminResidentsIndexRouteImport.update({
+    id: '/residents/',
+    path: '/residents/',
+    getParentRoute: () => AuthenticatedShellAdminRouteRoute,
+  } as any)
+const AuthenticatedShellAdminResidentsIdRoute =
+  AuthenticatedShellAdminResidentsIdRouteImport.update({
+    id: '/residents/$id',
+    path: '/residents/$id',
+    getParentRoute: () => AuthenticatedShellAdminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -141,15 +189,22 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/announcements/$id': typeof AnnouncementsIdRoute
   '/announcements/': typeof AnnouncementsIndexRoute
+  '/admin': typeof AuthenticatedShellAdminRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedShellDashboardRoute
+  '/help': typeof AuthenticatedShellHelpRoute
+  '/notifications': typeof AuthenticatedShellNotificationsRoute
+  '/profile': typeof AuthenticatedShellProfileRoute
   '/bulletin/$id': typeof AuthenticatedShellBulletinIdRoute
   '/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
   '/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
   '/requests/$id': typeof AuthenticatedShellRequestsIdRoute
   '/requests/new': typeof AuthenticatedShellRequestsNewRoute
+  '/admin/': typeof AuthenticatedShellAdminIndexRoute
   '/bulletin/': typeof AuthenticatedShellBulletinIndexRoute
   '/complaints/': typeof AuthenticatedShellComplaintsIndexRoute
   '/requests/': typeof AuthenticatedShellRequestsIndexRoute
+  '/admin/residents/$id': typeof AuthenticatedShellAdminResidentsIdRoute
+  '/admin/residents/': typeof AuthenticatedShellAdminResidentsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -161,14 +216,20 @@ export interface FileRoutesByTo {
   '/announcements/$id': typeof AnnouncementsIdRoute
   '/announcements': typeof AnnouncementsIndexRoute
   '/dashboard': typeof AuthenticatedShellDashboardRoute
+  '/help': typeof AuthenticatedShellHelpRoute
+  '/notifications': typeof AuthenticatedShellNotificationsRoute
+  '/profile': typeof AuthenticatedShellProfileRoute
   '/bulletin/$id': typeof AuthenticatedShellBulletinIdRoute
   '/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
   '/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
   '/requests/$id': typeof AuthenticatedShellRequestsIdRoute
   '/requests/new': typeof AuthenticatedShellRequestsNewRoute
+  '/admin': typeof AuthenticatedShellAdminIndexRoute
   '/bulletin': typeof AuthenticatedShellBulletinIndexRoute
   '/complaints': typeof AuthenticatedShellComplaintsIndexRoute
   '/requests': typeof AuthenticatedShellRequestsIndexRoute
+  '/admin/residents/$id': typeof AuthenticatedShellAdminResidentsIdRoute
+  '/admin/residents': typeof AuthenticatedShellAdminResidentsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -182,15 +243,22 @@ export interface FileRoutesById {
   '/_authenticated/_shell': typeof AuthenticatedShellRouteRouteWithChildren
   '/announcements/$id': typeof AnnouncementsIdRoute
   '/announcements/': typeof AnnouncementsIndexRoute
+  '/_authenticated/_shell/admin': typeof AuthenticatedShellAdminRouteRouteWithChildren
   '/_authenticated/_shell/dashboard': typeof AuthenticatedShellDashboardRoute
+  '/_authenticated/_shell/help': typeof AuthenticatedShellHelpRoute
+  '/_authenticated/_shell/notifications': typeof AuthenticatedShellNotificationsRoute
+  '/_authenticated/_shell/profile': typeof AuthenticatedShellProfileRoute
   '/_authenticated/_shell/bulletin/$id': typeof AuthenticatedShellBulletinIdRoute
   '/_authenticated/_shell/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
   '/_authenticated/_shell/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
   '/_authenticated/_shell/requests/$id': typeof AuthenticatedShellRequestsIdRoute
   '/_authenticated/_shell/requests/new': typeof AuthenticatedShellRequestsNewRoute
+  '/_authenticated/_shell/admin/': typeof AuthenticatedShellAdminIndexRoute
   '/_authenticated/_shell/bulletin/': typeof AuthenticatedShellBulletinIndexRoute
   '/_authenticated/_shell/complaints/': typeof AuthenticatedShellComplaintsIndexRoute
   '/_authenticated/_shell/requests/': typeof AuthenticatedShellRequestsIndexRoute
+  '/_authenticated/_shell/admin/residents/$id': typeof AuthenticatedShellAdminResidentsIdRoute
+  '/_authenticated/_shell/admin/residents/': typeof AuthenticatedShellAdminResidentsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -203,15 +271,22 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/announcements/$id'
     | '/announcements/'
+    | '/admin'
     | '/dashboard'
+    | '/help'
+    | '/notifications'
+    | '/profile'
     | '/bulletin/$id'
     | '/complaints/$id'
     | '/complaints/new'
     | '/requests/$id'
     | '/requests/new'
+    | '/admin/'
     | '/bulletin/'
     | '/complaints/'
     | '/requests/'
+    | '/admin/residents/$id'
+    | '/admin/residents/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -223,14 +298,20 @@ export interface FileRouteTypes {
     | '/announcements/$id'
     | '/announcements'
     | '/dashboard'
+    | '/help'
+    | '/notifications'
+    | '/profile'
     | '/bulletin/$id'
     | '/complaints/$id'
     | '/complaints/new'
     | '/requests/$id'
     | '/requests/new'
+    | '/admin'
     | '/bulletin'
     | '/complaints'
     | '/requests'
+    | '/admin/residents/$id'
+    | '/admin/residents'
   id:
     | '__root__'
     | '/'
@@ -243,15 +324,22 @@ export interface FileRouteTypes {
     | '/_authenticated/_shell'
     | '/announcements/$id'
     | '/announcements/'
+    | '/_authenticated/_shell/admin'
     | '/_authenticated/_shell/dashboard'
+    | '/_authenticated/_shell/help'
+    | '/_authenticated/_shell/notifications'
+    | '/_authenticated/_shell/profile'
     | '/_authenticated/_shell/bulletin/$id'
     | '/_authenticated/_shell/complaints/$id'
     | '/_authenticated/_shell/complaints/new'
     | '/_authenticated/_shell/requests/$id'
     | '/_authenticated/_shell/requests/new'
+    | '/_authenticated/_shell/admin/'
     | '/_authenticated/_shell/bulletin/'
     | '/_authenticated/_shell/complaints/'
     | '/_authenticated/_shell/requests/'
+    | '/_authenticated/_shell/admin/residents/$id'
+    | '/_authenticated/_shell/admin/residents/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -338,12 +426,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnnouncementsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/_shell/admin': {
+      id: '/_authenticated/_shell/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedShellAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedShellRouteRoute
+    }
     '/_authenticated/_shell/dashboard': {
       id: '/_authenticated/_shell/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedShellDashboardRouteImport
       parentRoute: typeof AuthenticatedShellRouteRoute
+    }
+    '/_authenticated/_shell/help': {
+      id: '/_authenticated/_shell/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof AuthenticatedShellHelpRouteImport
+      parentRoute: typeof AuthenticatedShellRouteRoute
+    }
+    '/_authenticated/_shell/notifications': {
+      id: '/_authenticated/_shell/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedShellNotificationsRouteImport
+      parentRoute: typeof AuthenticatedShellRouteRoute
+    }
+    '/_authenticated/_shell/profile': {
+      id: '/_authenticated/_shell/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedShellProfileRouteImport
+      parentRoute: typeof AuthenticatedShellRouteRoute
+    }
+    '/_authenticated/_shell/admin/': {
+      id: '/_authenticated/_shell/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedShellAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedShellAdminRouteRoute
     }
     '/_authenticated/_shell/bulletin/': {
       id: '/_authenticated/_shell/bulletin/'
@@ -401,11 +524,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedShellRequestsNewRouteImport
       parentRoute: typeof AuthenticatedShellRouteRoute
     }
+    '/_authenticated/_shell/admin/residents/': {
+      id: '/_authenticated/_shell/admin/residents/'
+      path: '/residents'
+      fullPath: '/admin/residents/'
+      preLoaderRoute: typeof AuthenticatedShellAdminResidentsIndexRouteImport
+      parentRoute: typeof AuthenticatedShellAdminRouteRoute
+    }
+    '/_authenticated/_shell/admin/residents/$id': {
+      id: '/_authenticated/_shell/admin/residents/$id'
+      path: '/residents/$id'
+      fullPath: '/admin/residents/$id'
+      preLoaderRoute: typeof AuthenticatedShellAdminResidentsIdRouteImport
+      parentRoute: typeof AuthenticatedShellAdminRouteRoute
+    }
   }
 }
 
+interface AuthenticatedShellAdminRouteRouteChildren {
+  AuthenticatedShellAdminIndexRoute: typeof AuthenticatedShellAdminIndexRoute
+  AuthenticatedShellAdminResidentsIdRoute: typeof AuthenticatedShellAdminResidentsIdRoute
+  AuthenticatedShellAdminResidentsIndexRoute: typeof AuthenticatedShellAdminResidentsIndexRoute
+}
+
+const AuthenticatedShellAdminRouteRouteChildren: AuthenticatedShellAdminRouteRouteChildren =
+  {
+    AuthenticatedShellAdminIndexRoute: AuthenticatedShellAdminIndexRoute,
+    AuthenticatedShellAdminResidentsIdRoute:
+      AuthenticatedShellAdminResidentsIdRoute,
+    AuthenticatedShellAdminResidentsIndexRoute:
+      AuthenticatedShellAdminResidentsIndexRoute,
+  }
+
+const AuthenticatedShellAdminRouteRouteWithChildren =
+  AuthenticatedShellAdminRouteRoute._addFileChildren(
+    AuthenticatedShellAdminRouteRouteChildren,
+  )
+
 interface AuthenticatedShellRouteRouteChildren {
+  AuthenticatedShellAdminRouteRoute: typeof AuthenticatedShellAdminRouteRouteWithChildren
   AuthenticatedShellDashboardRoute: typeof AuthenticatedShellDashboardRoute
+  AuthenticatedShellHelpRoute: typeof AuthenticatedShellHelpRoute
+  AuthenticatedShellNotificationsRoute: typeof AuthenticatedShellNotificationsRoute
+  AuthenticatedShellProfileRoute: typeof AuthenticatedShellProfileRoute
   AuthenticatedShellBulletinIdRoute: typeof AuthenticatedShellBulletinIdRoute
   AuthenticatedShellComplaintsIdRoute: typeof AuthenticatedShellComplaintsIdRoute
   AuthenticatedShellComplaintsNewRoute: typeof AuthenticatedShellComplaintsNewRoute
@@ -418,7 +579,12 @@ interface AuthenticatedShellRouteRouteChildren {
 
 const AuthenticatedShellRouteRouteChildren: AuthenticatedShellRouteRouteChildren =
   {
+    AuthenticatedShellAdminRouteRoute:
+      AuthenticatedShellAdminRouteRouteWithChildren,
     AuthenticatedShellDashboardRoute: AuthenticatedShellDashboardRoute,
+    AuthenticatedShellHelpRoute: AuthenticatedShellHelpRoute,
+    AuthenticatedShellNotificationsRoute: AuthenticatedShellNotificationsRoute,
+    AuthenticatedShellProfileRoute: AuthenticatedShellProfileRoute,
     AuthenticatedShellBulletinIdRoute: AuthenticatedShellBulletinIdRoute,
     AuthenticatedShellComplaintsIdRoute: AuthenticatedShellComplaintsIdRoute,
     AuthenticatedShellComplaintsNewRoute: AuthenticatedShellComplaintsNewRoute,

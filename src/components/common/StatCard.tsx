@@ -10,7 +10,7 @@ const tones = {
   danger: "bg-destructive/12 text-destructive",
 } as const;
 
-export function StatCard({ label, value, icon: Icon, tone = "royal", hint }: { label: string; value: number | string; icon: LucideIcon; tone?: keyof typeof tones; hint?: string }) {
+export function StatCard({ label, value, icon: Icon, tone = "royal", hint }: { label: string; value: number | string; icon: LucideIcon; tone?: keyof typeof tones; hint?: string | undefined }) {
   return (
     <div className="animate-fade-up rounded-xl border bg-card p-5 shadow-card">
       <div className="flex items-start justify-between gap-3">

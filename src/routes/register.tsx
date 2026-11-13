@@ -96,36 +96,36 @@ function RegisterPage() {
         <div>
           <Label htmlFor="full_name">Full name</Label>
           <Input id="full_name" autoComplete="name" value={form.full_name} onChange={set("full_name")} className="mt-1.5" placeholder="Juan Dela Cruz" />
-          <FieldError msg={errors.full_name} />
+          <FieldError msg={errors["full_name"]} />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="email">Email address</Label>
             <Input id="email" type="email" autoComplete="email" value={form.email} onChange={set("email")} className="mt-1.5" />
-            <FieldError msg={errors.email} />
+            <FieldError msg={errors["email"]} />
           </div>
           <div>
             <Label htmlFor="contact_number">Contact number</Label>
             <Input id="contact_number" type="tel" autoComplete="tel" value={form.contact_number} onChange={set("contact_number")} className="mt-1.5" placeholder="09171234567" />
-            <FieldError msg={errors.contact_number} />
+            <FieldError msg={errors["contact_number"]} />
           </div>
         </div>
         <div>
           <Label htmlFor="address">Complete residential address</Label>
           <Textarea id="address" rows={2} value={form.address} onChange={set("address")} className="mt-1.5" placeholder="House no., street, purok/sitio, Barangay Pag-asa, Olongapo City" />
-          <FieldError msg={errors.address} />
+          <FieldError msg={errors["address"]} />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="password">Password</Label>
             <Input id="password" type="password" autoComplete="new-password" value={form.password} onChange={set("password")} className="mt-1.5" />
-            <FieldError msg={errors.password ?? undefined} />
-            {!errors.password && <p className="mt-1 text-xs text-muted-foreground">8+ characters with a letter and a number</p>}
+            <FieldError msg={errors["password"] ?? undefined} />
+            {!errors["password"] && <p className="mt-1 text-xs text-muted-foreground">8+ characters with a letter and a number</p>}
           </div>
           <div>
             <Label htmlFor="confirm_password">Confirm password</Label>
             <Input id="confirm_password" type="password" autoComplete="new-password" value={form.confirm_password} onChange={set("confirm_password")} className="mt-1.5" />
-            <FieldError msg={errors.confirm_password} />
+            <FieldError msg={errors["confirm_password"]} />
           </div>
         </div>
         <div>
@@ -147,7 +147,7 @@ function RegisterPage() {
               and consent to the processing of my personal information under the Data Privacy Act of 2012.
             </label>
           </div>
-          <FieldError msg={errors.privacy_consent} />
+          <FieldError msg={errors["privacy_consent"]} />
         </div>
         <Button type="submit" size="lg" className="w-full" disabled={busy}>{busy ? <Spinner /> : <UserPlus />} Create account</Button>
       </form>

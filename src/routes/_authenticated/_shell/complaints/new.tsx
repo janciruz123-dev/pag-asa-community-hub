@@ -85,7 +85,7 @@ function NewComplaint() {
           <div>
             <Label htmlFor="title">Complaint title *</Label>
             <Input id="title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="mt-1.5" placeholder="e.g. Loud karaoke past 10 PM on Purok 3" />
-            <FieldError msg={errors.title} />
+            <FieldError msg={errors["title"]} />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
@@ -94,23 +94,23 @@ function NewComplaint() {
                 <SelectTrigger className="mt-1.5" aria-label="Category"><SelectValue placeholder="Choose a category" /></SelectTrigger>
                 <SelectContent>{COMPLAINT_CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
               </Select>
-              <FieldError msg={errors.category} />
+              <FieldError msg={errors["category"]} />
             </div>
             <div>
               <Label htmlFor="incident_date">Date of incident *</Label>
               <Input id="incident_date" type="date" max={todayISO()} value={form.incident_date} onChange={(e) => setForm({ ...form, incident_date: e.target.value })} className="mt-1.5" />
-              <FieldError msg={errors.incident_date} />
+              <FieldError msg={errors["incident_date"]} />
             </div>
           </div>
           <div>
             <Label htmlFor="location">Location of incident *</Label>
             <Input id="location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} className="mt-1.5" placeholder="Street, purok or landmark" />
-            <FieldError msg={errors.location} />
+            <FieldError msg={errors["location"]} />
           </div>
           <div>
             <Label htmlFor="description">Detailed description *</Label>
             <Textarea id="description" rows={6} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="mt-1.5" placeholder="What happened, when, and who is affected?" />
-            <FieldError msg={errors.description} />
+            <FieldError msg={errors["description"]} />
           </div>
         </div>
         <div className="space-y-4">

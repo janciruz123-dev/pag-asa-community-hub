@@ -33,7 +33,7 @@ export const announcementCategoriesQuery = queryOptions({
   staleTime: 5 * 60_000,
 });
 
-export function publishedAnnouncementsQuery(opts: { q?: string; categoryId?: string; page?: number; limit?: number }) {
+export function publishedAnnouncementsQuery(opts: { q?: string | undefined; categoryId?: string | undefined; page?: number | undefined; limit?: number | undefined }) {
   const page = opts.page ?? 1;
   const limit = opts.limit ?? PAGE_SIZE;
   return queryOptions({
@@ -64,7 +64,7 @@ export function announcementQuery(id: string) {
   });
 }
 
-export function managedAnnouncementsQuery(opts: { q?: string; status?: string; categoryId?: string; page: number }) {
+export function managedAnnouncementsQuery(opts: { q?: string | undefined; status?: string | undefined; categoryId?: string | undefined; page: number }) {
   return queryOptions({
     queryKey: ["announcements", "managed", opts],
     queryFn: async () => {

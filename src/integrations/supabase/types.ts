@@ -616,6 +616,27 @@ export type Database = {
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_staff_or_admin: { Args: { _user_id: string }; Returns: boolean }
+      list_accounts: {
+        Args: {
+          _active?: boolean
+          _limit?: number
+          _offset?: number
+          _q?: string
+          _role?: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: {
+          address: string
+          contact_number: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          is_active: boolean
+          permissions: Database["public"]["Enums"]["staff_permission"][]
+          roles: Database["public"]["Enums"]["app_role"][]
+          total: number
+        }[]
+      }
       notify: {
         Args: { _link: string; _message: string; _title: string; _user: string }
         Returns: undefined

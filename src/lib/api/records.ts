@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PAGE_SIZE, type ComplaintStatus, type RequestStatus } from "@/lib/constants";
 import { sanitizeSearch } from "@/lib/validation";
 
-export type ListFilters = { q?: string; status?: string; category?: string; from?: string; to?: string; page: number; assigned?: string };
+export type ListFilters = { q?: string | undefined; status?: string | undefined; category?: string | undefined; from?: string | undefined; to?: string | undefined; page: number; assigned?: string | undefined };
 
 function dayEnd(d: string) { return `${d}T23:59:59.999`; }
 

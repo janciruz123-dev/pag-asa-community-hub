@@ -5,7 +5,7 @@ import type { FileRouteTypes } from "@/routeTree.gen";
 
 export type Crumb = { label: string; to?: FileRouteTypes["to"] };
 
-export function PageHeader({ title, description, crumbs, actions }: { title: string; description?: string; crumbs?: Crumb[]; actions?: ReactNode }) {
+export function PageHeader({ title, description, crumbs, actions }: { title: string; description?: string | undefined; crumbs?: Crumb[] | undefined; actions?: ReactNode }) {
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">

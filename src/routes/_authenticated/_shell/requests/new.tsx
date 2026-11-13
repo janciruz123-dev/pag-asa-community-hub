@@ -89,7 +89,7 @@ function NewRequest() {
               <SelectTrigger className="mt-1.5" aria-label="Service"><SelectValue placeholder="Choose a service" /></SelectTrigger>
               <SelectContent>{services?.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
             </Select>
-            <FieldError msg={errors.category_id} />
+            <FieldError msg={errors["category_id"]} />
           </div>
           {selected && (
             <div className="flex gap-3 rounded-lg bg-accent p-3 text-sm">
@@ -103,12 +103,12 @@ function NewRequest() {
           <div>
             <Label htmlFor="purpose">Purpose of request *</Label>
             <Textarea id="purpose" rows={3} value={form.purpose} onChange={(e) => setForm({ ...form, purpose: e.target.value })} className="mt-1.5" placeholder="e.g. Employment requirement, scholarship application" />
-            <FieldError msg={errors.purpose} />
+            <FieldError msg={errors["purpose"]} />
           </div>
           <div>
             <Label htmlFor="info">Additional information</Label>
             <Textarea id="info" rows={4} value={form.additional_info} onChange={(e) => setForm({ ...form, additional_info: e.target.value })} className="mt-1.5" placeholder="Anything the barangay should know" />
-            <FieldError msg={errors.additional_info} />
+            <FieldError msg={errors["additional_info"]} />
           </div>
         </div>
         <div className="space-y-4">

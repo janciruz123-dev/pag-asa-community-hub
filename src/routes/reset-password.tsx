@@ -56,7 +56,7 @@ function Page() {
     if (error) { toast.error(error.message); return; }
     toast.success("Password updated. Please sign in with your new password.");
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true, search: { redirect: undefined } });
+    navigate({ to: "/auth", replace: true });
   }
 
   return (
@@ -73,12 +73,12 @@ function Page() {
           <div>
             <Label htmlFor="pw">New password</Label>
             <Input id="pw" type="password" autoComplete="new-password" value={pw} onChange={(e) => setPw(e.target.value)} className="mt-1.5 h-11" />
-            <FieldError msg={err.pw} />
+            <FieldError msg={err["pw"]} />
           </div>
           <div>
             <Label htmlFor="pw2">Confirm new password</Label>
             <Input id="pw2" type="password" autoComplete="new-password" value={pw2} onChange={(e) => setPw2(e.target.value)} className="mt-1.5 h-11" />
-            <FieldError msg={err.pw2} />
+            <FieldError msg={err["pw2"]} />
           </div>
           <Button type="submit" size="lg" className="w-full" disabled={busy}>{busy ? <Spinner /> : <KeyRound />} Update password</Button>
         </form>

@@ -84,7 +84,7 @@ export function NotificationBell({ userId }: { userId: string }) {
                 onClick={() => {
                   if (!n.is_read) mark.mutate([n.id]);
                   setOpen(false);
-                  if (n.link && n.link.startsWith("/")) router.history.push(n.link);
+                  if (n.link && n.link.startsWith("/")) router.navigate({ href: n.link });
                 }}
                 className={cn("flex w-full gap-3 border-b px-4 py-3 text-left transition-colors last:border-0 hover:bg-muted", !n.is_read && "bg-accent/50")}
               >

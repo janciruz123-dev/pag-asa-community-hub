@@ -31,7 +31,7 @@ export function AuthShell({ title, subtitle, children, footer }: { title: string
   );
 }
 
-export function FieldError({ msg }: { msg?: string }) {
+export function FieldError({ msg }: { msg?: string | undefined }) {
   if (!msg) return null;
   return <p className="mt-1 text-xs font-medium text-destructive">{msg}</p>;
 }

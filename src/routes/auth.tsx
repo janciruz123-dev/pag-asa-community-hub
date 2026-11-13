@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { safeRedirect } from "@/lib/auth-actions";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>) => ({ redirect: typeof s.redirect === "string" ? s.redirect : undefined }),
+  validateSearch: (s: Record<string, unknown>): { redirect?: string } => (typeof s["redirect"] === "string" ? { redirect: s["redirect"] } : {}),
   head: () => ({
     meta: [
       { title: "Login — MyPag-asa" },
@@ -66,7 +66,7 @@ function LoginPage() {
       qc.setQueryData(currentUserQuery.queryKey, me);
       toast.success(`Welcome back, ${me?.profile?.full_name?.split(" ")[0] ?? "resident"}!`);
       const fallback = me?.isOfficial ? "/admin" : "/dashboard";
-      navigate({ to: safeRedirect(redirect, fallback), replace: true });
+      navigate({ href: safeRedirect(redirect, fallback), replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Unable to sign in.");
     } finally {
@@ -80,7 +80,7 @@ function LoginPage() {
         <div>
           <Label htmlFor="email">Email address</Label>
           <Input id="email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1.5 h-11" />
-          <FieldError msg={errors.email} />
+          <FieldError msg={errors["email"]} />
         </div>
         <div>
           <div className="flex items-center justify-between">
@@ -93,7 +93,7 @@ function LoginPage() {
               {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          <FieldError msg={errors.password} />
+          <FieldError msg={errors["password"]} />
         </div>
         <Button type="submit" size="lg" className="w-full" disabled={busy}>{busy ? <Spinner /> : <LogIn />} Sign in</Button>
       </form>
