@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, Menu } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogIn, Menu, ShieldCheck, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useCurrentUser } from "@/hooks/use-current-user";
 
@@ -34,8 +35,28 @@ export function PublicHeader() {
             <Button asChild><Link to={home}><LayoutDashboard /> My Dashboard</Link></Button>
           ) : (
             <>
-              <Button variant="ghost" asChild><Link to="/auth">Login</Link></Button>
-              <Button variant="royal" asChild><Link to="/register">Register</Link></Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost"><LogIn /> Sign In <ChevronDown className="opacity-60" /></Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64">
+                  <DropdownMenuLabel className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Choose how to sign in</DropdownMenuLabel>
+                  <DropdownMenuItem asChild className="cursor-pointer items-start gap-3 py-2.5">
+                    <Link to="/auth" search={{ mode: "resident" }}>
+                      <LogIn className="mt-0.5 text-royal" />
+                      <span><span className="block font-semibold">Resident Sign In</span><span className="text-xs text-muted-foreground">For registered residents</span></span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild className="cursor-pointer items-start gap-3 py-2.5">
+                    <Link to="/auth" search={{ mode: "admin" }}>
+                      <ShieldCheck className="mt-0.5 text-primary" />
+                      <span><span className="block font-semibold">Admin Sign In</span><span className="text-xs text-muted-foreground">For barangay officials and staff</span></span>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button variant="royal" asChild><Link to="/register"><UserPlus /> Register</Link></Button>
             </>
           )}
         </div>
@@ -56,8 +77,9 @@ export function PublicHeader() {
                   <Button asChild><Link to={home}>My Dashboard</Link></Button>
                 ) : (
                   <>
-                    <Button variant="outline" asChild><Link to="/auth">Login</Link></Button>
-                    <Button variant="royal" asChild><Link to="/register">Register</Link></Button>
+                    <Button variant="outline" asChild><Link to="/auth" search={{ mode: "resident" }} onClick={() => setOpen(false)}><LogIn /> Resident Sign In</Link></Button>
+                    <Button variant="royal" asChild><Link to="/register" onClick={() => setOpen(false)}><UserPlus /> Create Resident Account</Link></Button>
+                    <Button variant="default" asChild><Link to="/auth" search={{ mode: "admin" }} onClick={() => setOpen(false)}><ShieldCheck /> Admin Sign In</Link></Button>
                   </>
                 )}
               </div>
