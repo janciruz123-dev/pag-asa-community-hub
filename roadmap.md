@@ -12,3 +12,6 @@
 - [x] Administrator account management: create admin (name, email, password, confirm), manage other admins; never public
 - [x] Unauthenticated /admin visits go to the Administrator Login; residents bounced from /admin
 - [x] Remix setup: database restored (sign-up hook, live notifications, starter services and categories)
+- [x] Auth screens: Sign In / Create Resident Account / Admin Sign In
+- [x] First admin designated by system owner via private setup code (no first-registrant bootstrap)
+- [ ] System owner sets the setup code, then claims the first admin account (waiting on owner)

@@ -68,3 +68,28 @@ export const setAccountActive = createServerFn({ method: "POST" })
     if (bErr) throw new Error(bErr.message);
     return { ok: true };
   });
+
+/**
+ * First-time setup: the system owner designates the first administrator by entering the
+ * private setup code (ADMIN_SETUP_CODE) while signed in. Only works while no admin exists.
+ */
+export const claimFirstAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ code: z.string().min(1).max(200) }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { setupCodeMatches } = await import("@/lib/setup-code");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { count, error: cErr } = await supabaseAdmin.from("user_roles").select("id", { count: "exact", head: true }).eq("role", "admin");
+    if (cErr) throw new Error("Could not check setup status. Please try again.");
+    if ((count ?? 0) > 0) throw new Error("Setup is already complete. Ask an existing administrator to grant access.");
+    const configured = process.env["ADMIN_SETUP_CODE"];
+    if (!configured) throw new Error("First-time setup isn't configured yet. The system owner must set the setup code first.");
+    if (!(await setupCodeMatches(configured, data.code))) {
+      await supabaseAdmin.from("activity_logs").insert({ actor_id: context.userId, action: "account.admin_setup_failed", description: "Incorrect administrator setup code entered", entity_type: "profile", entity_id: context.userId });
+      throw new Error("That setup code is incorrect.");
+    }
+    const { error } = await supabaseAdmin.from("user_roles").upsert([{ user_id: context.userId, role: "admin" }, { user_id: context.userId, role: "staff" }], { onConflict: "user_id,role", ignoreDuplicates: true });
+    if (error) throw new Error(error.message);
+    await supabaseAdmin.from("activity_logs").insert({ actor_id: context.userId, action: "account.first_admin", description: "System owner designated the first administrator using the setup code", entity_type: "profile", entity_id: context.userId });
+    return { ok: true };
+  });

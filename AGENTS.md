@@ -36,4 +36,4 @@ use the editor.
 - Privileged account actions (creating staff/admin accounts, banning) go through `src/lib/admin.functions.ts`, which re-checks `is_admin` server-side before using the service-role client.
 - Signed-in pages live under `src/routes/_authenticated/_shell/` (shared sidebar layout); admin pages under `.../_shell/admin/` with per-page `requirePermission` guards.
 - Storage buckets are private (public buckets are blocked); files are shown through signed URLs and paths are stored in the database, not URLs.
-- The first account ever registered is bootstrapped as administrator by the signup trigger when no admin exists.
+- Every public sign-up gets only the resident role; the first administrator is designated once via `/admin-setup` with the owner's `ADMIN_SETUP_CODE` secret (server-checked, closes once any admin exists), so no public visitor can claim admin.

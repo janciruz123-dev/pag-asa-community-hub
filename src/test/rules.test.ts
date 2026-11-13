@@ -65,3 +65,20 @@ describe("login", () => {
     expect(sanitizeSearch("abc,(def)%")).toBe("abc def");
   });
 });
+
+describe("first administrator setup code", () => {
+  it("accepts only the exact configured code", async () => {
+    const { setupCodeMatches } = await import("@/lib/setup-code");
+    expect(await setupCodeMatches("barangay-owner-2026", "barangay-owner-2026")).toBe(true);
+    expect(await setupCodeMatches("barangay-owner-2026", "barangay-owner-2025")).toBe(false);
+  });
+  it("refuses every code when the owner has not configured one", async () => {
+    const { setupCodeMatches } = await import("@/lib/setup-code");
+    expect(await setupCodeMatches(undefined, "anything-at-all")).toBe(false);
+    expect(await setupCodeMatches("", "")).toBe(false);
+  });
+  it("refuses when the configured code is shorter than 12 characters", async () => {
+    const { setupCodeMatches } = await import("@/lib/setup-code");
+    expect(await setupCodeMatches("short1", "short1")).toBe(false);
+  });
+});
