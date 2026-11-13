@@ -190,8 +190,6 @@ export function AppShell({ me, children }: { me: CurrentUser; children: ReactNod
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <div className="hidden">
-      </div>
     </div>
   );
 }
