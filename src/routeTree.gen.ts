@@ -35,6 +35,8 @@ import { Route as AuthenticatedShellRequestsIdRouteImport } from './routes/_auth
 import { Route as AuthenticatedShellRequestsNewRouteImport } from './routes/_authenticated/_shell/requests/new'
 import { Route as AuthenticatedShellAdminComplaintsIndexRouteImport } from './routes/_authenticated/_shell/admin/complaints/index'
 import { Route as AuthenticatedShellAdminComplaintsIdRouteImport } from './routes/_authenticated/_shell/admin/complaints/$id'
+import { Route as AuthenticatedShellAdminRequestsIndexRouteImport } from './routes/_authenticated/_shell/admin/requests/index'
+import { Route as AuthenticatedShellAdminRequestsIdRouteImport } from './routes/_authenticated/_shell/admin/requests/$id'
 import { Route as AuthenticatedShellAdminResidentsIndexRouteImport } from './routes/_authenticated/_shell/admin/residents/index'
 import { Route as AuthenticatedShellAdminResidentsIdRouteImport } from './routes/_authenticated/_shell/admin/residents/$id'
 
@@ -181,6 +183,18 @@ const AuthenticatedShellAdminComplaintsIdRoute =
     path: '/complaints/$id',
     getParentRoute: () => AuthenticatedShellAdminRouteRoute,
   } as any)
+const AuthenticatedShellAdminRequestsIndexRoute =
+  AuthenticatedShellAdminRequestsIndexRouteImport.update({
+    id: '/requests/',
+    path: '/requests/',
+    getParentRoute: () => AuthenticatedShellAdminRouteRoute,
+  } as any)
+const AuthenticatedShellAdminRequestsIdRoute =
+  AuthenticatedShellAdminRequestsIdRouteImport.update({
+    id: '/requests/$id',
+    path: '/requests/$id',
+    getParentRoute: () => AuthenticatedShellAdminRouteRoute,
+  } as any)
 const AuthenticatedShellAdminResidentsIndexRoute =
   AuthenticatedShellAdminResidentsIndexRouteImport.update({
     id: '/residents/',
@@ -218,8 +232,10 @@ export interface FileRoutesByFullPath {
   '/complaints/': typeof AuthenticatedShellComplaintsIndexRoute
   '/requests/': typeof AuthenticatedShellRequestsIndexRoute
   '/admin/complaints/$id': typeof AuthenticatedShellAdminComplaintsIdRoute
+  '/admin/requests/$id': typeof AuthenticatedShellAdminRequestsIdRoute
   '/admin/residents/$id': typeof AuthenticatedShellAdminResidentsIdRoute
   '/admin/complaints/': typeof AuthenticatedShellAdminComplaintsIndexRoute
+  '/admin/requests/': typeof AuthenticatedShellAdminRequestsIndexRoute
   '/admin/residents/': typeof AuthenticatedShellAdminResidentsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -245,8 +261,10 @@ export interface FileRoutesByTo {
   '/complaints': typeof AuthenticatedShellComplaintsIndexRoute
   '/requests': typeof AuthenticatedShellRequestsIndexRoute
   '/admin/complaints/$id': typeof AuthenticatedShellAdminComplaintsIdRoute
+  '/admin/requests/$id': typeof AuthenticatedShellAdminRequestsIdRoute
   '/admin/residents/$id': typeof AuthenticatedShellAdminResidentsIdRoute
   '/admin/complaints': typeof AuthenticatedShellAdminComplaintsIndexRoute
+  '/admin/requests': typeof AuthenticatedShellAdminRequestsIndexRoute
   '/admin/residents': typeof AuthenticatedShellAdminResidentsIndexRoute
 }
 export interface FileRoutesById {
@@ -276,8 +294,10 @@ export interface FileRoutesById {
   '/_authenticated/_shell/complaints/': typeof AuthenticatedShellComplaintsIndexRoute
   '/_authenticated/_shell/requests/': typeof AuthenticatedShellRequestsIndexRoute
   '/_authenticated/_shell/admin/complaints/$id': typeof AuthenticatedShellAdminComplaintsIdRoute
+  '/_authenticated/_shell/admin/requests/$id': typeof AuthenticatedShellAdminRequestsIdRoute
   '/_authenticated/_shell/admin/residents/$id': typeof AuthenticatedShellAdminResidentsIdRoute
   '/_authenticated/_shell/admin/complaints/': typeof AuthenticatedShellAdminComplaintsIndexRoute
+  '/_authenticated/_shell/admin/requests/': typeof AuthenticatedShellAdminRequestsIndexRoute
   '/_authenticated/_shell/admin/residents/': typeof AuthenticatedShellAdminResidentsIndexRoute
 }
 export interface FileRouteTypes {
@@ -306,8 +326,10 @@ export interface FileRouteTypes {
     | '/complaints/'
     | '/requests/'
     | '/admin/complaints/$id'
+    | '/admin/requests/$id'
     | '/admin/residents/$id'
     | '/admin/complaints/'
+    | '/admin/requests/'
     | '/admin/residents/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -333,8 +355,10 @@ export interface FileRouteTypes {
     | '/complaints'
     | '/requests'
     | '/admin/complaints/$id'
+    | '/admin/requests/$id'
     | '/admin/residents/$id'
     | '/admin/complaints'
+    | '/admin/requests'
     | '/admin/residents'
   id:
     | '__root__'
@@ -363,8 +387,10 @@ export interface FileRouteTypes {
     | '/_authenticated/_shell/complaints/'
     | '/_authenticated/_shell/requests/'
     | '/_authenticated/_shell/admin/complaints/$id'
+    | '/_authenticated/_shell/admin/requests/$id'
     | '/_authenticated/_shell/admin/residents/$id'
     | '/_authenticated/_shell/admin/complaints/'
+    | '/_authenticated/_shell/admin/requests/'
     | '/_authenticated/_shell/admin/residents/'
   fileRoutesById: FileRoutesById
 }
@@ -564,6 +590,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedShellAdminComplaintsIdRouteImport
       parentRoute: typeof AuthenticatedShellAdminRouteRoute
     }
+    '/_authenticated/_shell/admin/requests/': {
+      id: '/_authenticated/_shell/admin/requests/'
+      path: '/requests'
+      fullPath: '/admin/requests/'
+      preLoaderRoute: typeof AuthenticatedShellAdminRequestsIndexRouteImport
+      parentRoute: typeof AuthenticatedShellAdminRouteRoute
+    }
+    '/_authenticated/_shell/admin/requests/$id': {
+      id: '/_authenticated/_shell/admin/requests/$id'
+      path: '/requests/$id'
+      fullPath: '/admin/requests/$id'
+      preLoaderRoute: typeof AuthenticatedShellAdminRequestsIdRouteImport
+      parentRoute: typeof AuthenticatedShellAdminRouteRoute
+    }
     '/_authenticated/_shell/admin/residents/': {
       id: '/_authenticated/_shell/admin/residents/'
       path: '/residents'
@@ -584,8 +624,10 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedShellAdminRouteRouteChildren {
   AuthenticatedShellAdminIndexRoute: typeof AuthenticatedShellAdminIndexRoute
   AuthenticatedShellAdminComplaintsIdRoute: typeof AuthenticatedShellAdminComplaintsIdRoute
+  AuthenticatedShellAdminRequestsIdRoute: typeof AuthenticatedShellAdminRequestsIdRoute
   AuthenticatedShellAdminResidentsIdRoute: typeof AuthenticatedShellAdminResidentsIdRoute
   AuthenticatedShellAdminComplaintsIndexRoute: typeof AuthenticatedShellAdminComplaintsIndexRoute
+  AuthenticatedShellAdminRequestsIndexRoute: typeof AuthenticatedShellAdminRequestsIndexRoute
   AuthenticatedShellAdminResidentsIndexRoute: typeof AuthenticatedShellAdminResidentsIndexRoute
 }
 
@@ -594,10 +636,14 @@ const AuthenticatedShellAdminRouteRouteChildren: AuthenticatedShellAdminRouteRou
     AuthenticatedShellAdminIndexRoute: AuthenticatedShellAdminIndexRoute,
     AuthenticatedShellAdminComplaintsIdRoute:
       AuthenticatedShellAdminComplaintsIdRoute,
+    AuthenticatedShellAdminRequestsIdRoute:
+      AuthenticatedShellAdminRequestsIdRoute,
     AuthenticatedShellAdminResidentsIdRoute:
       AuthenticatedShellAdminResidentsIdRoute,
     AuthenticatedShellAdminComplaintsIndexRoute:
       AuthenticatedShellAdminComplaintsIndexRoute,
+    AuthenticatedShellAdminRequestsIndexRoute:
+      AuthenticatedShellAdminRequestsIndexRoute,
     AuthenticatedShellAdminResidentsIndexRoute:
       AuthenticatedShellAdminResidentsIndexRoute,
   }
