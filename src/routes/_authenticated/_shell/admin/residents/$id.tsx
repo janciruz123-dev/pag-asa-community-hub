@@ -17,7 +17,7 @@ import { setAccountActive } from "@/lib/admin.functions";
 import type { AppRole } from "@/lib/constants";
 import { errorMessage, fmtDate, fmtDateTime } from "@/lib/format";
 import { requirePermission } from "@/lib/guards";
-import { RoleBadges } from "./index";
+import { RoleBadges } from "@/components/admin/RoleBadges";
 
 export const Route = createFileRoute("/_authenticated/_shell/admin/residents/$id")({
   beforeLoad: ({ context }) => requirePermission(context.queryClient, "view_residents"),

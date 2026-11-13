@@ -46,8 +46,8 @@ function Page() {
     e.preventDefault();
     const p = passwordSchema.safeParse(pw);
     const next: Record<string, string> = {};
-    if (!p.success) next.pw = p.error.issues[0]!.message;
-    if (pw !== pw2) next.pw2 = "Passwords do not match";
+    if (!p.success) next["pw"] = p.error.issues[0]!.message;
+    if (pw !== pw2) next["pw2"] = "Passwords do not match";
     setErr(next);
     if (Object.keys(next).length) return;
     setBusy(true);

@@ -8,3 +8,6 @@
 - [ ] Admin/staff portal: dashboard w/ charts, residents, complaints, requests, announcements (+categories), service categories, staff accounts & permissions, activity logs
 - [ ] Notifications bell (unread count, mark read/all)
 - [ ] Tests for validation rules; end-to-end check
+- [ ] Login page: separate Resident Login / Administrator Login (admin tab verifies role in DB)
+- [ ] Administrator account management: create admin (name, email, password, confirm), manage other admins; never public
+- [ ] Unauthenticated /admin visits go to the Administrator Login; residents bounced from /admin

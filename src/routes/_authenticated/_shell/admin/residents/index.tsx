@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { ListSkeleton } from "@/components/common/Loading";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Pager } from "@/components/common/Pager";
+import { RoleBadges } from "@/components/admin/RoleBadges";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,16 +20,6 @@ export const Route = createFileRoute("/_authenticated/_shell/admin/residents/")(
   head: () => ({ meta: [{ title: "Residents — MyPag-asa Admin" }, { name: "description", content: "Registered resident accounts." }] }),
   component: Residents,
 });
-
-export function RoleBadges({ roles }: { roles: AppRole[] }) {
-  return (
-    <span className="flex flex-wrap gap-1">
-      {roles.includes("admin") && <Badge variant="default">Admin</Badge>}
-      {roles.includes("staff") && <Badge variant="royal">Staff</Badge>}
-      {roles.includes("resident") && <Badge variant="muted">Resident</Badge>}
-    </span>
-  );
-}
 
 function Residents() {
   const [q, setQ] = useState("");

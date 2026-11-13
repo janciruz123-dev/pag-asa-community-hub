@@ -8,7 +8,7 @@ import type { ListFilters } from "@/lib/api/records";
 type Opt = { value: string; label: string };
 
 export function FilterBar({ filters, onChange, statuses, categories, placeholder = "Search by reference no. or title…", extra }: {
-  filters: ListFilters; onChange: (f: ListFilters) => void; statuses: Opt[]; categories?: Opt[]; placeholder?: string; extra?: React.ReactNode;
+  filters: ListFilters; onChange: (f: ListFilters) => void; statuses: Opt[]; categories?: Opt[] | undefined; placeholder?: string | undefined; extra?: React.ReactNode;
 }) {
   const [q, setQ] = useState(filters.q ?? "");
   useEffect(() => {
