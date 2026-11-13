@@ -20,6 +20,7 @@ import { Route as AuthenticatedShellRouteRouteImport } from './routes/_authentic
 import { Route as AnnouncementsIndexRouteImport } from './routes/announcements/index'
 import { Route as AnnouncementsIdRouteImport } from './routes/announcements/$id'
 import { Route as AuthenticatedShellAdminRouteRouteImport } from './routes/_authenticated/_shell/admin/route'
+import { Route as AuthenticatedShellAdminSetupRouteImport } from './routes/_authenticated/_shell/admin-setup'
 import { Route as AuthenticatedShellDashboardRouteImport } from './routes/_authenticated/_shell/dashboard'
 import { Route as AuthenticatedShellHelpRouteImport } from './routes/_authenticated/_shell/help'
 import { Route as AuthenticatedShellNotificationsRouteImport } from './routes/_authenticated/_shell/notifications'
@@ -98,6 +99,12 @@ const AuthenticatedShellAdminRouteRoute =
   AuthenticatedShellAdminRouteRouteImport.update({
     id: '/admin',
     path: '/admin',
+    getParentRoute: () => AuthenticatedShellRouteRoute,
+  } as any)
+const AuthenticatedShellAdminSetupRoute =
+  AuthenticatedShellAdminSetupRouteImport.update({
+    id: '/admin-setup',
+    path: '/admin-setup',
     getParentRoute: () => AuthenticatedShellRouteRoute,
   } as any)
 const AuthenticatedShellDashboardRoute =
@@ -260,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/announcements/$id': typeof AnnouncementsIdRoute
   '/announcements/': typeof AnnouncementsIndexRoute
   '/admin': typeof AuthenticatedShellAdminRouteRouteWithChildren
+  '/admin-setup': typeof AuthenticatedShellAdminSetupRoute
   '/dashboard': typeof AuthenticatedShellDashboardRoute
   '/help': typeof AuthenticatedShellHelpRoute
   '/notifications': typeof AuthenticatedShellNotificationsRoute
@@ -295,6 +303,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/announcements/$id': typeof AnnouncementsIdRoute
   '/announcements': typeof AnnouncementsIndexRoute
+  '/admin-setup': typeof AuthenticatedShellAdminSetupRoute
   '/dashboard': typeof AuthenticatedShellDashboardRoute
   '/help': typeof AuthenticatedShellHelpRoute
   '/notifications': typeof AuthenticatedShellNotificationsRoute
@@ -334,6 +343,7 @@ export interface FileRoutesById {
   '/announcements/$id': typeof AnnouncementsIdRoute
   '/announcements/': typeof AnnouncementsIndexRoute
   '/_authenticated/_shell/admin': typeof AuthenticatedShellAdminRouteRouteWithChildren
+  '/_authenticated/_shell/admin-setup': typeof AuthenticatedShellAdminSetupRoute
   '/_authenticated/_shell/dashboard': typeof AuthenticatedShellDashboardRoute
   '/_authenticated/_shell/help': typeof AuthenticatedShellHelpRoute
   '/_authenticated/_shell/notifications': typeof AuthenticatedShellNotificationsRoute
@@ -372,6 +382,7 @@ export interface FileRouteTypes {
     | '/announcements/$id'
     | '/announcements/'
     | '/admin'
+    | '/admin-setup'
     | '/dashboard'
     | '/help'
     | '/notifications'
@@ -407,6 +418,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/announcements/$id'
     | '/announcements'
+    | '/admin-setup'
     | '/dashboard'
     | '/help'
     | '/notifications'
@@ -445,6 +457,7 @@ export interface FileRouteTypes {
     | '/announcements/$id'
     | '/announcements/'
     | '/_authenticated/_shell/admin'
+    | '/_authenticated/_shell/admin-setup'
     | '/_authenticated/_shell/dashboard'
     | '/_authenticated/_shell/help'
     | '/_authenticated/_shell/notifications'
@@ -561,6 +574,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedShellAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedShellRouteRoute
+    }
+    '/_authenticated/_shell/admin-setup': {
+      id: '/_authenticated/_shell/admin-setup'
+      path: '/admin-setup'
+      fullPath: '/admin-setup'
+      preLoaderRoute: typeof AuthenticatedShellAdminSetupRouteImport
       parentRoute: typeof AuthenticatedShellRouteRoute
     }
     '/_authenticated/_shell/dashboard': {
@@ -790,6 +810,7 @@ const AuthenticatedShellAdminRouteRouteWithChildren =
 
 interface AuthenticatedShellRouteRouteChildren {
   AuthenticatedShellAdminRouteRoute: typeof AuthenticatedShellAdminRouteRouteWithChildren
+  AuthenticatedShellAdminSetupRoute: typeof AuthenticatedShellAdminSetupRoute
   AuthenticatedShellDashboardRoute: typeof AuthenticatedShellDashboardRoute
   AuthenticatedShellHelpRoute: typeof AuthenticatedShellHelpRoute
   AuthenticatedShellNotificationsRoute: typeof AuthenticatedShellNotificationsRoute
@@ -808,6 +829,7 @@ const AuthenticatedShellRouteRouteChildren: AuthenticatedShellRouteRouteChildren
   {
     AuthenticatedShellAdminRouteRoute:
       AuthenticatedShellAdminRouteRouteWithChildren,
+    AuthenticatedShellAdminSetupRoute: AuthenticatedShellAdminSetupRoute,
     AuthenticatedShellDashboardRoute: AuthenticatedShellDashboardRoute,
     AuthenticatedShellHelpRoute: AuthenticatedShellHelpRoute,
     AuthenticatedShellNotificationsRoute: AuthenticatedShellNotificationsRoute,
