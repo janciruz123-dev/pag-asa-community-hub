@@ -8,6 +8,13 @@
       "when": 1794531896736,
       "tag": "0000_restore_signup_trigger_and_realtime",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794532491225,
+      "tag": "0001_owner_designated_first_admin",
+      "breakpoints": true
     }
   ]
 }

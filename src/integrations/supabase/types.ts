@@ -600,6 +600,7 @@ export type Database = {
     }
     Functions: {
       admin_dashboard_stats: { Args: never; Returns: Json }
+      admin_setup_open: { Args: never; Returns: boolean }
       has_permission: {
         Args: {
           _perm: Database["public"]["Enums"]["staff_permission"]
