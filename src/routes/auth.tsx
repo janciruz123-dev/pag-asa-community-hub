@@ -25,7 +25,7 @@ export const Route = createFileRoute("/auth")({
     meta: [
       { title: "Sign In — MyPag-asa" },
       { name: "description", content: "Resident and administrator sign-in for MyPag-asa, the Barangay Pag-asa online services portal." },
-      { property: "og:title", content: "Login to MyPag-asa" },
+      { property: "og:title", content: "Sign in to MyPag-asa" },
       { property: "og:description", content: "Sign in to the Barangay Pag-asa online services portal." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

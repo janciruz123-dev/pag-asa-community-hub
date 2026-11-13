@@ -61,3 +61,14 @@ export function initialLoginMode(mode: LoginMode | undefined, redirect: string |
   if (mode) return mode;
   return redirect && safeRedirect(redirect, "").startsWith("/admin") ? "admin" : "resident";
 }
+
+/** Turn registration errors into plain-language messages. */
+export function signUpErrorMessage(raw: string): string {
+  const m = raw.toLowerCase();
+  if (m.includes("already")) return "An account with this email already exists. Try signing in instead.";
+  if (m.includes("rate") || m.includes("too many")) return "Too many attempts. Please wait a few minutes and try again.";
+  if (m.includes("password")) return "Please choose a stronger password (8+ characters with a letter and a number).";
+  if (m.includes("email")) return "Please enter a valid email address you can access.";
+  if (m.includes("fetch") || m.includes("network")) return "Can't reach the server. Check your internet connection and try again.";
+  return "Registration failed. Please try again.";
+}
