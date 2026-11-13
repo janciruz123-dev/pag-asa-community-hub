@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MailCheck, UserPlus } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { AuthOptions, AuthShell, FieldError, FormAlert } from "@/components/auth/AuthShell";
 import { Spinner } from "@/components/common/Loading";
 import { FilePicker } from "@/components/common/FilePicker";
