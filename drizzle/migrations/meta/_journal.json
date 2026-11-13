@@ -1,27 +1,5 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1794376673931,
-      "tag": "0000_mypagasa_core_schema",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1794376720470,
-      "tag": "0001_storage_policies",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1794530285008,
-      "tag": "0002_accounts_directory_and_realtime",
-      "breakpoints": true
-    }
-  ]
+  "entries": []
 }
