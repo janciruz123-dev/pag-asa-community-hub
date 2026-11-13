@@ -25,6 +25,8 @@ import { Route as AuthenticatedShellHelpRouteImport } from './routes/_authentica
 import { Route as AuthenticatedShellNotificationsRouteImport } from './routes/_authenticated/_shell/notifications'
 import { Route as AuthenticatedShellProfileRouteImport } from './routes/_authenticated/_shell/profile'
 import { Route as AuthenticatedShellAdminIndexRouteImport } from './routes/_authenticated/_shell/admin/index'
+import { Route as AuthenticatedShellAdminActivityRouteImport } from './routes/_authenticated/_shell/admin/activity'
+import { Route as AuthenticatedShellAdminServicesRouteImport } from './routes/_authenticated/_shell/admin/services'
 import { Route as AuthenticatedShellBulletinIndexRouteImport } from './routes/_authenticated/_shell/bulletin/index'
 import { Route as AuthenticatedShellBulletinIdRouteImport } from './routes/_authenticated/_shell/bulletin/$id'
 import { Route as AuthenticatedShellComplaintsIndexRouteImport } from './routes/_authenticated/_shell/complaints/index'
@@ -124,6 +126,18 @@ const AuthenticatedShellAdminIndexRoute =
   AuthenticatedShellAdminIndexRouteImport.update({
     id: '/',
     path: '/',
+    getParentRoute: () => AuthenticatedShellAdminRouteRoute,
+  } as any)
+const AuthenticatedShellAdminActivityRoute =
+  AuthenticatedShellAdminActivityRouteImport.update({
+    id: '/activity',
+    path: '/activity',
+    getParentRoute: () => AuthenticatedShellAdminRouteRoute,
+  } as any)
+const AuthenticatedShellAdminServicesRoute =
+  AuthenticatedShellAdminServicesRouteImport.update({
+    id: '/services',
+    path: '/services',
     getParentRoute: () => AuthenticatedShellAdminRouteRoute,
   } as any)
 const AuthenticatedShellBulletinIndexRoute =
@@ -243,6 +257,8 @@ export interface FileRoutesByFullPath {
   '/help': typeof AuthenticatedShellHelpRoute
   '/notifications': typeof AuthenticatedShellNotificationsRoute
   '/profile': typeof AuthenticatedShellProfileRoute
+  '/admin/activity': typeof AuthenticatedShellAdminActivityRoute
+  '/admin/services': typeof AuthenticatedShellAdminServicesRoute
   '/bulletin/$id': typeof AuthenticatedShellBulletinIdRoute
   '/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
   '/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
@@ -275,6 +291,8 @@ export interface FileRoutesByTo {
   '/help': typeof AuthenticatedShellHelpRoute
   '/notifications': typeof AuthenticatedShellNotificationsRoute
   '/profile': typeof AuthenticatedShellProfileRoute
+  '/admin/activity': typeof AuthenticatedShellAdminActivityRoute
+  '/admin/services': typeof AuthenticatedShellAdminServicesRoute
   '/bulletin/$id': typeof AuthenticatedShellBulletinIdRoute
   '/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
   '/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
@@ -311,6 +329,8 @@ export interface FileRoutesById {
   '/_authenticated/_shell/help': typeof AuthenticatedShellHelpRoute
   '/_authenticated/_shell/notifications': typeof AuthenticatedShellNotificationsRoute
   '/_authenticated/_shell/profile': typeof AuthenticatedShellProfileRoute
+  '/_authenticated/_shell/admin/activity': typeof AuthenticatedShellAdminActivityRoute
+  '/_authenticated/_shell/admin/services': typeof AuthenticatedShellAdminServicesRoute
   '/_authenticated/_shell/bulletin/$id': typeof AuthenticatedShellBulletinIdRoute
   '/_authenticated/_shell/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
   '/_authenticated/_shell/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
@@ -346,6 +366,8 @@ export interface FileRouteTypes {
     | '/help'
     | '/notifications'
     | '/profile'
+    | '/admin/activity'
+    | '/admin/services'
     | '/bulletin/$id'
     | '/complaints/$id'
     | '/complaints/new'
@@ -378,6 +400,8 @@ export interface FileRouteTypes {
     | '/help'
     | '/notifications'
     | '/profile'
+    | '/admin/activity'
+    | '/admin/services'
     | '/bulletin/$id'
     | '/complaints/$id'
     | '/complaints/new'
@@ -413,6 +437,8 @@ export interface FileRouteTypes {
     | '/_authenticated/_shell/help'
     | '/_authenticated/_shell/notifications'
     | '/_authenticated/_shell/profile'
+    | '/_authenticated/_shell/admin/activity'
+    | '/_authenticated/_shell/admin/services'
     | '/_authenticated/_shell/bulletin/$id'
     | '/_authenticated/_shell/complaints/$id'
     | '/_authenticated/_shell/complaints/new'
@@ -559,6 +585,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedShellAdminIndexRouteImport
       parentRoute: typeof AuthenticatedShellAdminRouteRoute
     }
+    '/_authenticated/_shell/admin/activity': {
+      id: '/_authenticated/_shell/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AuthenticatedShellAdminActivityRouteImport
+      parentRoute: typeof AuthenticatedShellAdminRouteRoute
+    }
+    '/_authenticated/_shell/admin/services': {
+      id: '/_authenticated/_shell/admin/services'
+      path: '/services'
+      fullPath: '/admin/services'
+      preLoaderRoute: typeof AuthenticatedShellAdminServicesRouteImport
+      parentRoute: typeof AuthenticatedShellAdminRouteRoute
+    }
     '/_authenticated/_shell/bulletin/': {
       id: '/_authenticated/_shell/bulletin/'
       path: '/bulletin'
@@ -682,6 +722,8 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedShellAdminRouteRouteChildren {
+  AuthenticatedShellAdminActivityRoute: typeof AuthenticatedShellAdminActivityRoute
+  AuthenticatedShellAdminServicesRoute: typeof AuthenticatedShellAdminServicesRoute
   AuthenticatedShellAdminIndexRoute: typeof AuthenticatedShellAdminIndexRoute
   AuthenticatedShellAdminAnnouncementsIdRoute: typeof AuthenticatedShellAdminAnnouncementsIdRoute
   AuthenticatedShellAdminAnnouncementsNewRoute: typeof AuthenticatedShellAdminAnnouncementsNewRoute
@@ -696,6 +738,8 @@ interface AuthenticatedShellAdminRouteRouteChildren {
 
 const AuthenticatedShellAdminRouteRouteChildren: AuthenticatedShellAdminRouteRouteChildren =
   {
+    AuthenticatedShellAdminActivityRoute: AuthenticatedShellAdminActivityRoute,
+    AuthenticatedShellAdminServicesRoute: AuthenticatedShellAdminServicesRoute,
     AuthenticatedShellAdminIndexRoute: AuthenticatedShellAdminIndexRoute,
     AuthenticatedShellAdminAnnouncementsIdRoute:
       AuthenticatedShellAdminAnnouncementsIdRoute,
