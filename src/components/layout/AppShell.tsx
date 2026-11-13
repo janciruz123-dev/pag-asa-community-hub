@@ -14,7 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { can, type CurrentUser } from "@/hooks/use-current-user";
-import { signOutEverywhere } from "@/lib/auth-actions";
+import { signOutDestination, signOutEverywhere } from "@/lib/auth-actions";
+import {
+  AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 import { initials } from "@/lib/format";
 import { signedUrl } from "@/lib/storage";
 import { cn } from "@/lib/utils";
@@ -90,9 +94,17 @@ export function AppShell({ me, children }: { me: CurrentUser; children: ReactNod
     staleTime: 30 * 60_000,
   });
 
-  async function logout() {
-    await signOutEverywhere(qc);
-    navigate({ to: "/auth", replace: true });
+  const [confirmOut, setConfirmOut] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  function logout() { setOpen(false); setConfirmOut(true); }
+  async function doSignOut() {
+    setSigningOut(true);
+    const wasOfficial = me.isOfficial;
+    try {
+      await signOutEverywhere(qc);
+      toast.success("You've been signed out.");
+      navigate({ ...signOutDestination(wasOfficial), replace: true });
+    } finally { setSigningOut(false); setConfirmOut(false); }
   }
 
   const sidebar = (
@@ -106,7 +118,7 @@ export function AppShell({ me, children }: { me: CurrentUser; children: ReactNod
       <div className="flex-1 overflow-y-auto px-3 py-3"><NavList items={items} onNavigate={() => setOpen(false)} /></div>
       <div className="border-t border-sidebar-border p-3">
         <button onClick={logout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-          <LogOut className="h-4 w-4" /> Logout
+          <LogOut className="h-4 w-4" /> Sign out
         </button>
       </div>
     </div>
@@ -152,7 +164,7 @@ export function AppShell({ me, children }: { me: CurrentUser; children: ReactNod
                 <DropdownMenuItem asChild><Link to="/profile"><User /> My Profile</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/notifications"><Bell /> Notifications</Link></DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive"><LogOut /> Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive"><LogOut /> Sign out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -160,6 +172,25 @@ export function AppShell({ me, children }: { me: CurrentUser; children: ReactNod
         <main className="flex-1 bg-background px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
+      </div>
+      <AlertDialog open={confirmOut} onOpenChange={(o) => !signingOut && setConfirmOut(o)}>
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <div className="mb-1 flex h-11 w-11 items-center justify-center rounded-full bg-accent text-royal"><LogOut className="h-5 w-5" /></div>
+            <AlertDialogTitle>Sign out of MyPag-asa?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {me.isOfficial
+                ? "Your administrator session will end on all devices. You'll need to sign in again to access the Admin Dashboard."
+                : "Your session will end on all devices. You can sign in again anytime to check your complaints and requests."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={signingOut}>Stay signed in</AlertDialogCancel>
+            <Button onClick={doSignOut} disabled={signingOut}><LogOut /> {signingOut ? "Signing out…" : "Sign out"}</Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <div className="hidden">
       </div>
     </div>
   );
