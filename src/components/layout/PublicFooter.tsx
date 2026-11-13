@@ -20,8 +20,8 @@ export function PublicFooter() {
             <li><a href="/#services" className="hover:text-primary-foreground">Services</a></li>
             <li><Link to="/announcements" className="hover:text-primary-foreground">Announcements</Link></li>
             <li><Link to="/privacy" className="hover:text-primary-foreground">Privacy Notice</Link></li>
-            <li><Link to="/auth" search={{ mode: "resident" }} className="hover:text-primary-foreground">Resident Login</Link></li>
-            <li><Link to="/auth" search={{ mode: "admin" }} className="hover:text-primary-foreground">Administrator Login</Link></li>
+            <li><Link to="/auth" search={{ mode: "resident" }} className="hover:text-primary-foreground">Resident Sign In</Link></li>
+            <li><Link to="/auth" search={{ mode: "admin" }} className="hover:text-primary-foreground">Admin Sign In</Link></li>
           </ul>
         </div>
         <div>

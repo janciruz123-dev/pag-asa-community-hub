@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MailCheck, UserPlus } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
-import { AuthOptions, AuthShell, FieldError } from "@/components/auth/AuthShell";
+import { AuthOptions, AuthShell, FieldError, FormAlert } from "@/components/auth/AuthShell";
 import { Spinner } from "@/components/common/Loading";
 import { FilePicker } from "@/components/common/FilePicker";
 import { PrivacyNoticeContent } from "@/components/common/PrivacyNotice";
@@ -14,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadToBucket } from "@/lib/storage";
+import { signUpErrorMessage } from "@/lib/auth-actions";
 import { ALLOWED_IMAGE_TYPES, registerSchema } from "@/lib/validation";
 
 export const Route = createFileRoute("/register")({
@@ -37,6 +37,7 @@ function RegisterPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [sentTo, setSentTo] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string>();
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setForm({ ...form, [k]: e.target.value });
 
   async function onSubmit(e: React.FormEvent) {
@@ -44,10 +45,11 @@ function RegisterPage() {
     const parsed = registerSchema.safeParse({ ...form, privacy_consent: consent });
     if (!parsed.success) {
       setErrors(Object.fromEntries(parsed.error.issues.map((i) => [String(i.path[0]), i.message])));
-      toast.error("Please correct the highlighted fields.");
+      setFormError("Please correct the highlighted fields below.");
       return;
     }
     setErrors({});
+    setFormError(undefined);
     setBusy(true);
     try {
       const d = parsed.data;
@@ -59,7 +61,7 @@ function RegisterPage() {
           data: { full_name: d.full_name, contact_number: d.contact_number, address: d.address, privacy_consent: true },
         },
       });
-      if (error) throw error;
+      if (error) throw new Error(signUpErrorMessage(error.message));
       if (data.user && data.user.identities && data.user.identities.length === 0) {
         throw new Error("An account with this email already exists. Try signing in instead.");
       }
@@ -71,7 +73,7 @@ function RegisterPage() {
       }
       setSentTo(d.email);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Registration failed.");
+      setFormError(err instanceof Error ? err.message : "Registration failed. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -93,7 +95,8 @@ function RegisterPage() {
   return (
     <AuthShell title="Create Resident Account" subtitle="For residents of Barangay Pag-asa. New accounts are resident accounts." footer={<>Already registered? <Link to="/auth" className="font-semibold text-royal hover:underline">Sign in</Link></>}>
       <AuthOptions active="register" />
-      <form onSubmit={onSubmit} className="space-y-4" noValidate>
+      <form onSubmit={onSubmit} className="space-y-4 rounded-xl border bg-card p-5 shadow-card sm:p-6" noValidate>
+        <FormAlert msg={formError} />
         <div>
           <Label htmlFor="full_name">Full name</Label>
           <Input id="full_name" autoComplete="name" value={form.full_name} onChange={set("full_name")} className="mt-1.5" placeholder="Juan Dela Cruz" />

@@ -82,3 +82,21 @@ describe("first administrator setup code", () => {
     expect(await setupCodeMatches("short1", "short1")).toBe(false);
   });
 });
+
+describe("sign-in and sign-out destinations", () => {
+  it("sends residents to their dashboard and admins to the Admin Dashboard after sign-in", async () => {
+    const { loginDestination } = await import("@/lib/auth-actions");
+    expect(loginDestination(undefined, false)).toBe("/dashboard");
+    expect(loginDestination(undefined, true)).toBe("/admin");
+  });
+  it("never sends a resident to an admin page after sign-in, even via a redirect link", async () => {
+    const { loginDestination } = await import("@/lib/auth-actions");
+    expect(loginDestination("/admin/residents", false)).toBe("/dashboard");
+    expect(loginDestination("/admin/residents", true)).toBe("/admin/residents");
+  });
+  it("returns officials to Admin Sign In and residents to Sign In after sign-out", async () => {
+    const { signOutDestination } = await import("@/lib/auth-actions");
+    expect(signOutDestination(true)).toEqual({ to: "/auth", search: { mode: "admin" } });
+    expect(signOutDestination(false)).toEqual({ to: "/auth", search: { mode: "resident" } });
+  });
+});

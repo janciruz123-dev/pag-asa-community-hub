@@ -1,17 +1,17 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Eye, EyeOff, KeyRound, LogIn, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { AuthOptions, AuthShell, FieldError } from "@/components/auth/AuthShell";
+import { AuthOptions, AuthShell, FieldError, FormAlert } from "@/components/auth/AuthShell";
 import { Spinner } from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { currentUserQuery, fetchCurrentUser, useCurrentUser } from "@/hooks/use-current-user";
 import { supabase } from "@/integrations/supabase/client";
-import { initialLoginMode as initialMode, safeRedirect, type LoginMode as Mode } from "@/lib/auth-actions";
+import { initialLoginMode as initialMode, loginDestination, signInErrorMessage, signOutEverywhere, type LoginMode as Mode } from "@/lib/auth-actions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/auth")({
     meta: [
       { title: "Sign In — MyPag-asa" },
       { name: "description", content: "Resident and administrator sign-in for MyPag-asa, the Barangay Pag-asa online services portal." },
-      { property: "og:title", content: "Login to MyPag-asa" },
+      { property: "og:title", content: "Sign in to MyPag-asa" },
       { property: "og:description", content: "Sign in to the Barangay Pag-asa online services portal." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -50,12 +50,17 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
+  const [capsLock, setCapsLock] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState<string>();
   const [busy, setBusy] = useState(false);
   const isAdmin = mode === "admin";
 
+  useEffect(() => { setFormError(undefined); setErrors({}); }, [mode]);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setFormError(undefined);
     const parsed = schema.safeParse({ email, password });
     if (!parsed.success) {
       setErrors(Object.fromEntries(parsed.error.issues.map((i) => [String(i.path[0]), i.message])));
@@ -65,39 +70,30 @@ function LoginPage() {
     setBusy(true);
     try {
       const { error } = await supabase.auth.signInWithPassword(parsed.data);
-      if (error) {
-        const m = error.message.toLowerCase();
-        if (m.includes("banned")) throw new Error("This account has been deactivated. Please contact the barangay office.");
-        if (m.includes("email not confirmed")) throw new Error("Please confirm your email first — check your inbox for the confirmation link.");
-        if (m.includes("invalid")) throw new Error("Incorrect email or password.");
-        throw error;
-      }
+      if (error) throw new Error(signInErrorMessage(error.message));
       // Roles are always read back from the database, never from the form.
       const me = await fetchCurrentUser();
       if (me?.profile && !me.profile.is_active) {
-        await supabase.auth.signOut();
+        await signOutEverywhere(qc);
         throw new Error("This account has been deactivated. Please contact the barangay office.");
       }
       if (isAdmin && !me?.isOfficial) {
-        if (setupOpen) {
+        const { data: open } = await supabase.rpc("admin_setup_open");
+        if (open === true) {
           // No administrator exists yet: the system owner can designate this account with the setup code.
           qc.setQueryData(currentUserQuery.queryKey, me);
           toast.info("No administrator has been set up yet. Enter the system owner's setup code to continue.");
           navigate({ to: "/admin-setup", replace: true });
           return;
         }
-        await supabase.auth.signOut();
-        qc.clear();
-        throw new Error("This account doesn't have administrator access. Residents should use Sign In.");
+        await signOutEverywhere(qc);
+        throw new Error("This account doesn't have administrator access. Residents should use the Sign In option.");
       }
       qc.setQueryData(currentUserQuery.queryKey, me);
       toast.success(`Welcome back, ${me?.profile?.full_name?.split(" ")[0] ?? "resident"}!`);
-      const fallback = me?.isOfficial ? "/admin" : "/dashboard";
-      let target = safeRedirect(redirect, fallback);
-      if (target.startsWith("/admin") && !me?.isOfficial) target = "/dashboard";
-      navigate({ href: target, replace: true });
+      navigate({ href: loginDestination(redirect, !!me?.isOfficial), replace: true });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Unable to sign in.");
+      setFormError(err instanceof Error ? err.message : "Unable to sign in. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -105,26 +101,30 @@ function LoginPage() {
 
   return (
     <AuthShell
+      tone={isAdmin ? "admin" : "resident"}
       title={isAdmin ? "Admin Sign In" : "Sign In"}
       subtitle={isAdmin ? "For authorized Barangay Pag-asa officials and staff only." : "Welcome back! Use the email and password you registered with."}
-      footer={isAdmin ? <>There is no public admin sign-up. Administrator accounts are created by an existing administrator.</> : <>New resident? <Link to="/register" className="font-semibold text-royal hover:underline">Create a resident account</Link></>}
+      footer={isAdmin
+        ? <>There is no public admin sign-up. Administrator accounts are created by an existing administrator.</>
+        : <>New resident? <Link to="/register" className="font-semibold text-royal hover:underline">Create a resident account</Link></>}
     >
+      <AuthOptions active={isAdmin ? "admin" : "signin"} redirect={redirect} />
       {signedIn && (
-        <div className="mb-5 rounded-lg border bg-accent p-3 text-sm">
-          You're signed in as <span className="font-semibold">{signedIn.email}</span>.{" "}
-          <Link to={signedIn.isOfficial ? "/admin" : "/dashboard"} className="font-semibold text-royal hover:underline">Go to your dashboard</Link>
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-2 rounded-lg border bg-accent p-3 text-sm">
+          <span>You're signed in as <span className="font-semibold">{signedIn.email}</span>.</span>
+          <Link to={signedIn.isOfficial ? "/admin" : "/dashboard"} className="font-semibold text-royal hover:underline">Go to your dashboard →</Link>
         </div>
       )}
-      <AuthOptions active={isAdmin ? "admin" : "signin"} redirect={redirect} />
-      <form onSubmit={onSubmit} className={cn("space-y-4 rounded-xl", isAdmin && "border border-primary/20 bg-card p-5 shadow-card")} noValidate>
+      <form onSubmit={onSubmit} className={cn("space-y-4 rounded-xl border bg-card p-5 shadow-card sm:p-6", isAdmin && "border-primary/25")} noValidate>
         {isAdmin && (
           <div className="flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground">
-            <ShieldCheck className="h-4 w-4" /> Restricted area · access is checked against your assigned role
+            <ShieldCheck className="h-4 w-4 shrink-0" /> Restricted area · access is checked against your assigned role
           </div>
         )}
+        <FormAlert msg={formError} />
         <div>
           <Label htmlFor="email">{isAdmin ? "Administrator email" : "Email address"}</Label>
-          <Input id="email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1.5 h-11" />
+          <Input id="email" type="email" autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-invalid={!!errors["email"]} className="mt-1.5 h-11" placeholder="you@email.com" />
           <FieldError msg={errors["email"]} />
         </div>
         <div>
@@ -133,15 +133,19 @@ function LoginPage() {
             <Link to="/forgot-password" className="text-xs font-medium text-royal hover:underline">Forgot password?</Link>
           </div>
           <div className="relative mt-1.5">
-            <Input id="password" type={show ? "text" : "password"} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className="h-11 pr-10" />
+            <Input id="password" type={show ? "text" : "password"} autoComplete="current-password" value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyUp={(e) => setCapsLock(e.getModifierState("CapsLock"))}
+              aria-invalid={!!errors["password"]} className="h-11 pr-10" />
             <button type="button" onClick={() => setShow(!show)} className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1.5 text-muted-foreground hover:text-foreground" aria-label={show ? "Hide password" : "Show password"}>
               {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
           <FieldError msg={errors["password"]} />
+          {capsLock && <p className="mt-1 text-xs font-medium text-warning-foreground">Caps Lock is on.</p>}
         </div>
         <Button type="submit" size="lg" variant={isAdmin ? "default" : "royal"} className="w-full" disabled={busy}>
-          {busy ? <Spinner /> : isAdmin ? <ShieldCheck /> : <LogIn />} {isAdmin ? "Sign in as administrator" : "Sign in"}
+          {busy ? <Spinner /> : isAdmin ? <ShieldCheck /> : <LogIn />} {busy ? "Signing in…" : isAdmin ? "Sign in as administrator" : "Sign in"}
         </Button>
       </form>
       {isAdmin && setupOpen && (

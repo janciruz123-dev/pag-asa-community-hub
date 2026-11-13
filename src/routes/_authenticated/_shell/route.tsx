@@ -5,7 +5,7 @@ import { LoadingScreen } from "@/components/common/Loading";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { currentUserQuery } from "@/hooks/use-current-user";
-import { signOutEverywhere } from "@/lib/auth-actions";
+import { signOutDestination, signOutEverywhere } from "@/lib/auth-actions";
 
 export const Route = createFileRoute("/_authenticated/_shell")({
   beforeLoad: async ({ context }) => {
@@ -27,7 +27,7 @@ function ShellLayout() {
           <ShieldOff className="mx-auto h-12 w-12 text-destructive" />
           <h1 className="mt-4 text-xl font-semibold text-primary">Account deactivated</h1>
           <p className="mt-2 text-sm text-muted-foreground">Your MyPag-asa account has been deactivated by the barangay. Please visit the barangay hall for assistance.</p>
-          <Button className="mt-6" onClick={async () => { await signOutEverywhere(qc); navigate({ to: "/", replace: true }); }}>Sign out</Button>
+          <Button className="mt-6" onClick={async () => { await signOutEverywhere(qc); navigate({ ...signOutDestination(me.isOfficial), replace: true }); }}>Sign out</Button>
         </div>
       </div>
     );

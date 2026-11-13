@@ -15,4 +15,5 @@
 - [x] Auth screens: Sign In / Create Resident Account / Admin Sign In
 - [x] First admin designated by system owner via private setup code (no first-registrant bootstrap)
 - [x] Setup code saved
+- [x] Auth polish: header Sign In menu (Resident/Admin), inline errors, sign-out confirm + correct redirect, global session end, setup page steps
 - [ ] Owner registers, signs in via Admin Sign In and enters the setup code (waiting on owner)
