@@ -12,10 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { currentUserQuery, fetchCurrentUser, useCurrentUser } from "@/hooks/use-current-user";
 import { supabase } from "@/integrations/supabase/client";
-import { safeRedirect } from "@/lib/auth-actions";
+import { initialLoginMode as initialMode, safeRedirect, type LoginMode as Mode } from "@/lib/auth-actions";
 import { cn } from "@/lib/utils";
-
-type Mode = "resident" | "admin";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>): { redirect?: string; mode?: Mode } => {
@@ -38,12 +36,6 @@ export const Route = createFileRoute("/auth")({
 });
 
 const schema = z.object({ email: z.string().trim().email("Enter a valid email address"), password: z.string().min(1, "Enter your password") });
-
-/** Where an unauthenticated visitor's redirect points decides which login they see first. */
-export function initialMode(mode: Mode | undefined, redirect: string | undefined): Mode {
-  if (mode) return mode;
-  return redirect && safeRedirect(redirect, "").startsWith("/admin") ? "admin" : "resident";
-}
 
 function LoginPage() {
   const { redirect, mode: modeParam } = Route.useSearch();
