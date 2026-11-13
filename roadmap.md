@@ -14,4 +14,5 @@
 - [x] Remix setup: database restored (sign-up hook, live notifications, starter services and categories)
 - [x] Auth screens: Sign In / Create Resident Account / Admin Sign In
 - [x] First admin designated by system owner via private setup code (no first-registrant bootstrap)
-- [ ] System owner sets the setup code, then claims the first admin account (waiting on owner)
+- [x] Setup code saved
+- [ ] Owner registers, signs in via Admin Sign In and enters the setup code (waiting on owner)
