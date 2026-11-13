@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MailCheck, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { AuthShell, FieldError } from "@/components/auth/AuthShell";
+import { AuthOptions, AuthShell, FieldError } from "@/components/auth/AuthShell";
 import { Spinner } from "@/components/common/Loading";
 import { FilePicker } from "@/components/common/FilePicker";
 import { PrivacyNoticeContent } from "@/components/common/PrivacyNotice";
@@ -19,7 +19,7 @@ import { ALLOWED_IMAGE_TYPES, registerSchema } from "@/lib/validation";
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
-      { title: "Register — MyPag-asa" },
+      { title: "Create Resident Account — MyPag-asa" },
       { name: "description", content: "Create your MyPag-asa resident account for Barangay Pag-asa online services." },
       { property: "og:title", content: "Register for MyPag-asa" },
       { property: "og:description", content: "Create a resident account for Barangay Pag-asa online services." },
@@ -91,7 +91,8 @@ function RegisterPage() {
   }
 
   return (
-    <AuthShell title="Create your resident account" subtitle="Register to access Barangay Pag-asa online services." footer={<>Already registered? <Link to="/auth" className="font-semibold text-royal hover:underline">Sign in</Link></>}>
+    <AuthShell title="Create Resident Account" subtitle="For residents of Barangay Pag-asa. New accounts are resident accounts." footer={<>Already registered? <Link to="/auth" className="font-semibold text-royal hover:underline">Sign in</Link></>}>
+      <AuthOptions active="register" />
       <form onSubmit={onSubmit} className="space-y-4" noValidate>
         <div>
           <Label htmlFor="full_name">Full name</Label>
@@ -149,7 +150,7 @@ function RegisterPage() {
           </div>
           <FieldError msg={errors["privacy_consent"]} />
         </div>
-        <Button type="submit" size="lg" className="w-full" disabled={busy}>{busy ? <Spinner /> : <UserPlus />} Create account</Button>
+        <Button type="submit" size="lg" className="w-full" disabled={busy}>{busy ? <Spinner /> : <UserPlus />} Create resident account</Button>
       </form>
     </AuthShell>
   );
