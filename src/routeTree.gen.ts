@@ -27,6 +27,7 @@ import { Route as AuthenticatedShellProfileRouteImport } from './routes/_authent
 import { Route as AuthenticatedShellAdminIndexRouteImport } from './routes/_authenticated/_shell/admin/index'
 import { Route as AuthenticatedShellAdminActivityRouteImport } from './routes/_authenticated/_shell/admin/activity'
 import { Route as AuthenticatedShellAdminServicesRouteImport } from './routes/_authenticated/_shell/admin/services'
+import { Route as AuthenticatedShellAdminStaffRouteImport } from './routes/_authenticated/_shell/admin/staff'
 import { Route as AuthenticatedShellBulletinIndexRouteImport } from './routes/_authenticated/_shell/bulletin/index'
 import { Route as AuthenticatedShellBulletinIdRouteImport } from './routes/_authenticated/_shell/bulletin/$id'
 import { Route as AuthenticatedShellComplaintsIndexRouteImport } from './routes/_authenticated/_shell/complaints/index'
@@ -138,6 +139,12 @@ const AuthenticatedShellAdminServicesRoute =
   AuthenticatedShellAdminServicesRouteImport.update({
     id: '/services',
     path: '/services',
+    getParentRoute: () => AuthenticatedShellAdminRouteRoute,
+  } as any)
+const AuthenticatedShellAdminStaffRoute =
+  AuthenticatedShellAdminStaffRouteImport.update({
+    id: '/staff',
+    path: '/staff',
     getParentRoute: () => AuthenticatedShellAdminRouteRoute,
   } as any)
 const AuthenticatedShellBulletinIndexRoute =
@@ -259,6 +266,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedShellProfileRoute
   '/admin/activity': typeof AuthenticatedShellAdminActivityRoute
   '/admin/services': typeof AuthenticatedShellAdminServicesRoute
+  '/admin/staff': typeof AuthenticatedShellAdminStaffRoute
   '/bulletin/$id': typeof AuthenticatedShellBulletinIdRoute
   '/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
   '/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
@@ -293,6 +301,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedShellProfileRoute
   '/admin/activity': typeof AuthenticatedShellAdminActivityRoute
   '/admin/services': typeof AuthenticatedShellAdminServicesRoute
+  '/admin/staff': typeof AuthenticatedShellAdminStaffRoute
   '/bulletin/$id': typeof AuthenticatedShellBulletinIdRoute
   '/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
   '/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
@@ -331,6 +340,7 @@ export interface FileRoutesById {
   '/_authenticated/_shell/profile': typeof AuthenticatedShellProfileRoute
   '/_authenticated/_shell/admin/activity': typeof AuthenticatedShellAdminActivityRoute
   '/_authenticated/_shell/admin/services': typeof AuthenticatedShellAdminServicesRoute
+  '/_authenticated/_shell/admin/staff': typeof AuthenticatedShellAdminStaffRoute
   '/_authenticated/_shell/bulletin/$id': typeof AuthenticatedShellBulletinIdRoute
   '/_authenticated/_shell/complaints/$id': typeof AuthenticatedShellComplaintsIdRoute
   '/_authenticated/_shell/complaints/new': typeof AuthenticatedShellComplaintsNewRoute
@@ -368,6 +378,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/admin/activity'
     | '/admin/services'
+    | '/admin/staff'
     | '/bulletin/$id'
     | '/complaints/$id'
     | '/complaints/new'
@@ -402,6 +413,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/admin/activity'
     | '/admin/services'
+    | '/admin/staff'
     | '/bulletin/$id'
     | '/complaints/$id'
     | '/complaints/new'
@@ -439,6 +451,7 @@ export interface FileRouteTypes {
     | '/_authenticated/_shell/profile'
     | '/_authenticated/_shell/admin/activity'
     | '/_authenticated/_shell/admin/services'
+    | '/_authenticated/_shell/admin/staff'
     | '/_authenticated/_shell/bulletin/$id'
     | '/_authenticated/_shell/complaints/$id'
     | '/_authenticated/_shell/complaints/new'
@@ -599,6 +612,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedShellAdminServicesRouteImport
       parentRoute: typeof AuthenticatedShellAdminRouteRoute
     }
+    '/_authenticated/_shell/admin/staff': {
+      id: '/_authenticated/_shell/admin/staff'
+      path: '/staff'
+      fullPath: '/admin/staff'
+      preLoaderRoute: typeof AuthenticatedShellAdminStaffRouteImport
+      parentRoute: typeof AuthenticatedShellAdminRouteRoute
+    }
     '/_authenticated/_shell/bulletin/': {
       id: '/_authenticated/_shell/bulletin/'
       path: '/bulletin'
@@ -724,6 +744,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedShellAdminRouteRouteChildren {
   AuthenticatedShellAdminActivityRoute: typeof AuthenticatedShellAdminActivityRoute
   AuthenticatedShellAdminServicesRoute: typeof AuthenticatedShellAdminServicesRoute
+  AuthenticatedShellAdminStaffRoute: typeof AuthenticatedShellAdminStaffRoute
   AuthenticatedShellAdminIndexRoute: typeof AuthenticatedShellAdminIndexRoute
   AuthenticatedShellAdminAnnouncementsIdRoute: typeof AuthenticatedShellAdminAnnouncementsIdRoute
   AuthenticatedShellAdminAnnouncementsNewRoute: typeof AuthenticatedShellAdminAnnouncementsNewRoute
@@ -740,6 +761,7 @@ const AuthenticatedShellAdminRouteRouteChildren: AuthenticatedShellAdminRouteRou
   {
     AuthenticatedShellAdminActivityRoute: AuthenticatedShellAdminActivityRoute,
     AuthenticatedShellAdminServicesRoute: AuthenticatedShellAdminServicesRoute,
+    AuthenticatedShellAdminStaffRoute: AuthenticatedShellAdminStaffRoute,
     AuthenticatedShellAdminIndexRoute: AuthenticatedShellAdminIndexRoute,
     AuthenticatedShellAdminAnnouncementsIdRoute:
       AuthenticatedShellAdminAnnouncementsIdRoute,
