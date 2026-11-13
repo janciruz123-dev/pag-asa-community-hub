@@ -11,3 +11,4 @@
 - [ ] Login page: separate Resident Login / Administrator Login (admin tab verifies role in DB)
 - [ ] Administrator account management: create admin (name, email, password, confirm), manage other admins; never public
 - [ ] Unauthenticated /admin visits go to the Administrator Login; residents bounced from /admin
+- [ ] Remix setup: re-apply the full database setup (tables, rules, file storage) to the new project's empty database
