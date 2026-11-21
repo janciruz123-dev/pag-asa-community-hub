@@ -65,7 +65,7 @@ function Residents() {
               </thead>
               <tbody className="divide-y">
                 {data.rows.map((r) => (
-                  <tr key={r.id} className="hover:bg-muted/40">
+                  <tr key={r.id}>
                     <td className="px-5 py-3"><Link to="/admin/residents/$id" params={{ id: r.id }} className="font-medium text-primary hover:text-royal hover:underline">{r.full_name}</Link><p className="text-xs text-muted-foreground">{r.email}</p></td>
                     <td className="px-5 py-3 text-muted-foreground">{r.contact_number || "—"}</td>
                     <td className="px-5 py-3"><RoleBadges roles={r.roles} /></td>

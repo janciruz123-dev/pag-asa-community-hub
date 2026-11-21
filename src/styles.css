@@ -135,6 +135,7 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    cursor: default;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }

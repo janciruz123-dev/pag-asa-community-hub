@@ -41,7 +41,7 @@ function AdminComplaints() {
               </thead>
               <tbody className="divide-y">
                 {data.rows.map((c) => (
-                  <tr key={c.id} className="hover:bg-muted/40">
+                  <tr key={c.id}>
                     <td className="px-5 py-3"><Link to="/admin/complaints/$id" params={{ id: c.id }} className="font-mono text-xs font-semibold text-royal hover:underline">{c.reference_no}</Link></td>
                     <td className="max-w-xs px-5 py-3"><Link to="/admin/complaints/$id" params={{ id: c.id }} className="block truncate font-medium hover:text-royal">{c.title}</Link><span className="text-xs text-muted-foreground">{c.category}</span></td>
                     <td className="px-5 py-3 text-muted-foreground">{c.resident?.full_name}</td>

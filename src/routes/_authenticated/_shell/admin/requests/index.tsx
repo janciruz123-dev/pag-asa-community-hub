@@ -36,7 +36,7 @@ function AdminRequests() {
               </thead>
               <tbody className="divide-y">
                 {data.rows.map((r) => (
-                  <tr key={r.id} className="hover:bg-muted/40">
+                  <tr key={r.id}>
                     <td className="px-5 py-3"><Link to="/admin/requests/$id" params={{ id: r.id }} className="font-mono text-xs font-semibold text-royal hover:underline">{r.reference_no}</Link></td>
                     <td className="px-5 py-3"><Link to="/admin/requests/$id" params={{ id: r.id }} className="font-medium hover:text-royal">{r.service?.name}</Link></td>
                     <td className="px-5 py-3 text-muted-foreground">{r.resident?.full_name}</td>
