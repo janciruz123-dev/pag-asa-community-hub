@@ -17,3 +17,4 @@
 - [x] Setup code saved
 - [x] Auth polish: header Sign In menu (Resident/Admin), inline errors, sign-out confirm + correct redirect, global session end, setup page steps
 - [ ] Owner registers, signs in via Admin Sign In and enters the setup code (waiting on owner)
+- [x] AI assistant chat bubble (site guide + live services/announcements)

@@ -19,6 +19,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedShellRouteRouteImport } from './routes/_authenticated/_shell/route'
 import { Route as AnnouncementsIndexRouteImport } from './routes/announcements/index'
 import { Route as AnnouncementsIdRouteImport } from './routes/announcements/$id'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedShellAdminRouteRouteImport } from './routes/_authenticated/_shell/admin/route'
 import { Route as AuthenticatedShellAdminSetupRouteImport } from './routes/_authenticated/_shell/admin-setup'
 import { Route as AuthenticatedShellDashboardRouteImport } from './routes/_authenticated/_shell/dashboard'
@@ -93,6 +94,11 @@ const AnnouncementsIndexRoute = AnnouncementsIndexRouteImport.update({
 const AnnouncementsIdRoute = AnnouncementsIdRouteImport.update({
   id: '/announcements/$id',
   path: '/announcements/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedShellAdminRouteRoute =
@@ -265,6 +271,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/announcements/$id': typeof AnnouncementsIdRoute
+  '/api/chat': typeof ApiChatRoute
   '/announcements/': typeof AnnouncementsIndexRoute
   '/admin': typeof AuthenticatedShellAdminRouteRouteWithChildren
   '/admin-setup': typeof AuthenticatedShellAdminSetupRoute
@@ -302,6 +309,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/announcements/$id': typeof AnnouncementsIdRoute
+  '/api/chat': typeof ApiChatRoute
   '/announcements': typeof AnnouncementsIndexRoute
   '/admin-setup': typeof AuthenticatedShellAdminSetupRoute
   '/dashboard': typeof AuthenticatedShellDashboardRoute
@@ -341,6 +349,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/_shell': typeof AuthenticatedShellRouteRouteWithChildren
   '/announcements/$id': typeof AnnouncementsIdRoute
+  '/api/chat': typeof ApiChatRoute
   '/announcements/': typeof AnnouncementsIndexRoute
   '/_authenticated/_shell/admin': typeof AuthenticatedShellAdminRouteRouteWithChildren
   '/_authenticated/_shell/admin-setup': typeof AuthenticatedShellAdminSetupRoute
@@ -380,6 +389,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/announcements/$id'
+    | '/api/chat'
     | '/announcements/'
     | '/admin'
     | '/admin-setup'
@@ -417,6 +427,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/announcements/$id'
+    | '/api/chat'
     | '/announcements'
     | '/admin-setup'
     | '/dashboard'
@@ -455,6 +466,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/_shell'
     | '/announcements/$id'
+    | '/api/chat'
     | '/announcements/'
     | '/_authenticated/_shell/admin'
     | '/_authenticated/_shell/admin-setup'
@@ -494,6 +506,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   AnnouncementsIdRoute: typeof AnnouncementsIdRoute
+  ApiChatRoute: typeof ApiChatRoute
   AnnouncementsIndexRoute: typeof AnnouncementsIndexRoute
 }
 
@@ -567,6 +580,13 @@ declare module '@tanstack/react-router' {
       path: '/announcements/$id'
       fullPath: '/announcements/$id'
       preLoaderRoute: typeof AnnouncementsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/_shell/admin': {
@@ -870,6 +890,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   AnnouncementsIdRoute: AnnouncementsIdRoute,
+  ApiChatRoute: ApiChatRoute,
   AnnouncementsIndexRoute: AnnouncementsIndexRoute,
 }
 export const routeTree = rootRouteImport
