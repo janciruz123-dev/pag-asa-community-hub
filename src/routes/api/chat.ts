@@ -6,7 +6,8 @@ import { createLovableAiGatewayRunIdFetch } from "@/lib/ai/run-id";
 import { CONTACT, COMPLAINT_CATEGORIES } from "@/lib/constants";
 
 const SITE_GUIDE = `You are "Pag-asa Helper", the assistant of MyPag-asa, the online portal of Barangay Pag-asa, Olongapo City.
-Only answer using the site facts below and the live data provided. If you don't know, say so and suggest visiting or contacting the barangay hall. Never invent fees, requirements, officials, dates or document approvals. Never claim a request is approved. Reply briefly, in the user's language (English, Filipino/Tagalog OK), using short steps.
+Only answer using the site facts below and the live data provided. If you don't know, say so and suggest visiting or contacting the barangay hall. Never invent fees, requirements, officials, dates or document approvals. Never claim a request is approved. Be warm and conversational: greet back, understand informal wording and misspellings, ask a short clarifying question when needed, and use earlier messages in this conversation for follow-ups (you can recall what the user asked before). When a user describes a community problem (e.g. garbage, noise, flooding), suggest the matching complaint category and walk them through Submit a Complaint (sign in -> Submit a Complaint -> category, title, location, description, optional photos -> track it in My Complaints with the reference number). Reply briefly, in the user's language (English, Filipino/Tagalog OK), using short steps.
+Only discuss a user's own complaints/requests when they appear under "THIS USER'S RECORDS"; otherwise tell them to sign in and open My Complaints / My Service Requests. Never reveal other people's data.
 
 SITE FACTS
 - Public pages: Home (/), Announcements (/announcements), Privacy notice (/privacy).
@@ -17,13 +18,39 @@ SITE FACTS
 - Contact: ${CONTACT.office}, ${CONTACT.address}. Office hours: ${CONTACT.hours}.
 - Personal data is handled per the Data Privacy Act (RA 10173).`;
 
+function client(token?: string) {
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
+  return createClient(process.env["SUPABASE_URL"]!, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: {
+      ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}),
+      fetch: (i, init) => { const h = new Headers(init?.headers); if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization"); h.set("apikey", key); return fetch(i, { ...init, headers: h }); },
+    },
+  });
+}
+
+// Signed-in users only: reads their OWN records through RLS using their token.
+async function userData(token: string | null) {
+  if (!token) return "\n\nTHIS USER'S RECORDS\n(not signed in)";
+  try {
+    const sb = client(token);
+    const { data: u } = await sb.auth.getUser(token);
+    if (!u.user) return "\n\nTHIS USER'S RECORDS\n(not signed in)";
+    const [c, r] = await Promise.all([
+      sb.from("complaints").select("reference_no, title, category, status, created_at").eq("resident_id", u.user.id).order("created_at", { ascending: false }).limit(10),
+      sb.from("service_requests").select("reference_no, status, created_at, category:service_categories(name)").eq("resident_id", u.user.id).order("created_at", { ascending: false }).limit(10),
+    ]);
+    const cs = (c.data ?? []).map((x) => `- ${x.reference_no} "${x.title}" (${x.category}) — ${x.status}, filed ${x.created_at.slice(0, 10)}`).join("\n") || "(none)";
+    const rs = (r.data ?? []).map((x) => `- ${x.reference_no} ${(x.category as { name?: string } | null)?.name ?? ""} — ${x.status}, filed ${x.created_at.slice(0, 10)}`).join("\n") || "(none)";
+    return `\n\nTHIS USER'S RECORDS (signed in)\nComplaints:\n${cs}\nService requests:\n${rs}`;
+  } catch {
+    return "";
+  }
+}
+
 async function liveData() {
   try {
-    const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
-    const sb = createClient(process.env["SUPABASE_URL"]!, key, {
-      auth: { persistSession: false },
-      global: { fetch: (i, init) => { const h = new Headers(init?.headers); if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization"); h.set("apikey", key); return fetch(i, { ...init, headers: h }); } },
-    });
+    const sb = client();
     const [s, a] = await Promise.all([
       sb.from("service_categories").select("name, description, requirements").eq("is_active", true).order("sort_order"),
       sb.from("announcements").select("title, content, published_at").eq("status", "published").order("published_at", { ascending: false }).limit(5),
@@ -41,9 +68,17 @@ export const Route = createFileRoute("/api/chat")({
     handlers: {
       POST: async ({ request }) => {
         const apiKey = process.env["LOVABLE_API_KEY"];
-        if (!apiKey) return Response.json({ error: "The assistant is not configured yet." }, { status: 500 });
-        const { messages } = (await request.json()) as { messages: UIMessage[] };
-        if (!Array.isArray(messages) || messages.length > 60) return Response.json({ error: "Invalid conversation." }, { status: 400 });
+        if (!apiKey) {
+          console.error("LOVABLE_API_KEY missing");
+          return Response.json({ error: "Pag-asa Helper is temporarily unavailable. Please try again later." }, { status: 503 });
+        }
+        let messages: UIMessage[];
+        try { messages = ((await request.json()) as { messages: UIMessage[] }).messages; } catch { return Response.json({ error: "Invalid request." }, { status: 400 }); }
+        if (!Array.isArray(messages) || messages.length === 0 || messages.length > 60) return Response.json({ error: "This conversation is too long. Please start a new one." }, { status: 400 });
+        const tooLong = messages.some((m) => !m || !Array.isArray(m.parts) || m.parts.some((p) => p.type === "text" && p.text.length > 2000));
+        if (tooLong) return Response.json({ error: "Your message is too long. Please shorten it." }, { status: 400 });
+        const auth = request.headers.get("Authorization");
+        const token = auth?.startsWith("Bearer ") ? auth.slice(7) : null;
         const runIdFetch = createLovableAiGatewayRunIdFetch();
         const provider = createOpenAI({
           baseURL: "https://ai.gateway.lovable.dev/v1",
@@ -53,7 +88,7 @@ export const Route = createFileRoute("/api/chat")({
         });
         const result = streamText({
           model: provider.responses("openai/gpt-6.1-sol"),
-          system: SITE_GUIDE + (await liveData()),
+          system: SITE_GUIDE + (await liveData()) + (await userData(token)),
           messages: await convertToModelMessages(messages),
           abortSignal: request.signal,
           providerOptions: { openai: { forceReasoning: true, reasoningEffort: "low", reasoningSummary: "auto", store: false, include: ["reasoning.encrypted_content"] } },

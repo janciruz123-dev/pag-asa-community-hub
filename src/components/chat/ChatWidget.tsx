@@ -5,6 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+
+function friendly(msg?: string) {
+  if (!msg) return "Sorry, something went wrong. Please try again.";
+  try { const j = JSON.parse(msg) as { error?: string }; if (j.error) return j.error; } catch { /* plain text */ }
+  return msg;
+}
 
 const SUGGESTIONS = ["How do I submit a complaint?", "What services can I request?", "What are the latest announcements?"];
 
@@ -12,7 +19,14 @@ export function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const { messages, sendMessage, status, error, setMessages, stop, clearError } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+      headers: async (): Promise<Record<string, string>> => {
+        const { data } = await supabase.auth.getSession();
+        const t = data.session?.access_token;
+        return t ? { Authorization: `Bearer ${t}` } : {};
+      },
+    }),
   });
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -85,7 +99,7 @@ export function ChatWidget() {
             )}
             {error && (
               <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-destructive">
-                {error.message || "Sorry, something went wrong."}
+                {friendly(error.message)}
               </div>
             )}
             <div ref={endRef} />
